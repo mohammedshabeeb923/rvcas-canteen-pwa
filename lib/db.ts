@@ -225,11 +225,20 @@ export const db = {
     return order;
   },
   getOrderById: (orderId: string): Order | undefined => {
-    return readDb().orders.find(o => o.id === orderId || o.razorpayOrderId === orderId);
+    if (!orderId) return undefined;
+    return readDb().orders.find(o => 
+      o.id === orderId || 
+      o.cashfreeOrderId === orderId || 
+      o.razorpayOrderId === orderId
+    );
   },
   updateOrderStatus: (orderId: string, status: Order['paymentStatus'], razorpayPaymentId?: string): Order | undefined => {
     const state = readDb();
-    const order = state.orders.find(o => o.id === orderId || o.razorpayOrderId === orderId);
+    const order = state.orders.find(o => 
+      o.id === orderId || 
+      o.cashfreeOrderId === orderId || 
+      o.razorpayOrderId === orderId
+    );
     if (order) {
       order.paymentStatus = status;
       if (razorpayPaymentId) order.razorpayPaymentId = razorpayPaymentId;
