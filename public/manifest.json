@@ -1,0 +1,22 @@
+{
+  "name": "RVCAS CANTEEN - Digital Meal Pass",
+  "short_name": "RVCAS Canteen",
+  "description": "Rajagiri Viswajyothi College of Arts & Applied Sciences Canteen Digital Meal-Pass PWA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#6B1D2F",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
