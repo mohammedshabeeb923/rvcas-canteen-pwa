@@ -70,9 +70,9 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
   };
 
   return (
-    <div className="min-h-screen bg-[#F4EFE6] flex justify-center items-center sm:p-4">
+    <div className="min-h-screen min-h-[100dvh] bg-[#F4EFE6] flex justify-center items-center sm:p-4">
       {/* Mobile Screen Container */}
-      <div className="w-full max-w-sm h-screen sm:h-[844px] sm:max-h-[92vh] sm:rounded-[2.5rem] overflow-hidden shadow-2xl relative flex flex-col justify-between border-stone-300/60 sm:border bg-[#FAF7F2]">
+      <div className="w-full max-w-sm min-h-[100dvh] sm:min-h-0 sm:h-[844px] sm:max-h-[92vh] sm:rounded-[2.5rem] overflow-hidden shadow-2xl relative flex flex-col justify-between border-stone-300/60 sm:border bg-[#FAF7F2]">
         
         {/* TOP SECTION: College Campus Photo INSIDE the mobile screen */}
         <div className="relative h-[38%] min-h-[220px] w-full overflow-hidden shrink-0">

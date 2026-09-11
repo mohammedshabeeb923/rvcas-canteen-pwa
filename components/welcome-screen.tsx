@@ -23,9 +23,9 @@ export function WelcomeScreen({ onEnter }: WelcomeScreenProps) {
   }, [onEnter, router]);
 
   return (
-    <div className="min-h-screen bg-[#F4EFE6] flex justify-center items-center sm:p-4">
+    <div className="min-h-screen min-h-[100dvh] bg-[#F4EFE6] flex justify-center items-center sm:p-4">
       {/* Mobile Screen Container */}
-      <div className="w-full max-w-sm h-screen sm:h-[844px] sm:max-h-[92vh] sm:rounded-[2.5rem] overflow-hidden shadow-2xl relative flex flex-col justify-between border-stone-300/60 sm:border bg-gradient-to-b from-[#FDFBF8] via-[#FAF7F2] to-[#1E293B]">
+      <div className="w-full max-w-sm min-h-[100dvh] sm:min-h-0 sm:h-[844px] sm:max-h-[92vh] sm:rounded-[2.5rem] overflow-hidden shadow-2xl relative flex flex-col justify-between border-stone-300/60 sm:border bg-gradient-to-b from-[#FDFBF8] via-[#FAF7F2] to-[#1E293B]">
         
         {/* TOP SECTION: Logo & Clean College Title */}
         <div className="pt-10 sm:pt-12 px-6 text-center z-20 flex flex-col items-center">
