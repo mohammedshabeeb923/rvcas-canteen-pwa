@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/navigation';
-import { Menu, Bell, User, ShieldCheck, QrCode, LayoutDashboard, ChevronDown, LogOut, Clock } from 'lucide-react';
+import { Menu, X, Bell, User, ShieldCheck, QrCode, LayoutDashboard, ChevronDown, LogOut, Clock } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 
 export function Navbar({ 
@@ -24,25 +24,27 @@ export function Navbar({
     if (typeof window !== 'undefined') {
       localStorage.removeItem('rvcas_user');
       localStorage.removeItem('rvcas_token');
+      // Hard redirect to root to reset session and show login screen
+      window.location.href = '/';
     }
     if (onLogout) {
       onLogout();
-    } else {
-      window.location.href = '/';
     }
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#FAF7F2]/90 backdrop-blur-md border-b border-stone-200/60 px-4 py-2.5">
+    <header className="sticky top-0 z-40 bg-[#FAF7F2]/95 backdrop-blur-md border-b border-stone-200/80 px-4 py-2.5">
       <div className="max-w-md mx-auto flex items-center justify-between">
         {/* Left: Menu & Brand with Official Logo */}
         <div className="flex items-center gap-2.5">
           <button
+            type="button"
             onClick={() => setMenuOpen(!menuOpen)}
-            className="w-10 h-10 rounded-xl bg-white border border-stone-200/80 flex items-center justify-center text-stone-700 hover:bg-stone-50 transition shadow-xs"
-            aria-label="Toggle Menu"
+            className="w-10 h-10 rounded-xl bg-white border border-stone-300 flex items-center justify-center text-[#6B1D2F] hover:bg-stone-50 active:scale-95 transition shadow-xs cursor-pointer select-none"
+            aria-label="Open Navigation Menu"
+            title="Menu"
           >
-            <Menu className="w-5 h-5 text-[#6B1D2F]" />
+            {menuOpen ? <X className="w-5 h-5 stroke-[2.5]" /> : <Menu className="w-5 h-5 stroke-[2.5]" />}
           </button>
 
           <div
@@ -145,21 +147,32 @@ export function Navbar({
       {menuOpen && (
         <div
           onClick={() => setMenuOpen(false)}
-          className="fixed inset-0 bg-stone-900/40 backdrop-blur-xs z-50 flex"
+          className="fixed inset-0 bg-stone-900/50 backdrop-blur-xs z-[100] flex animate-in fade-in duration-200"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-72 bg-[#FAF7F2] h-full shadow-2xl p-5 flex flex-col justify-between"
+            className="w-72 max-w-[85vw] bg-[#FAF7F2] h-full shadow-2xl p-5 flex flex-col justify-between border-r border-stone-200 animate-in slide-in-from-left duration-200"
           >
             <div>
-              <div className="flex items-center gap-3 pb-4 border-b border-stone-200">
-                <div className="w-12 h-12 rounded-xl bg-white p-1 border border-stone-200 flex items-center justify-center shadow-xs">
-                  <img src="/images/rvcas-crest.png" alt="RVCAS Crest" className="w-full h-full object-contain" />
+              <div className="flex items-center justify-between pb-4 border-b border-stone-200">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-xl bg-white p-1 border border-stone-200 flex items-center justify-center shadow-xs">
+                    <img src="/images/rvcas-crest.png" alt="RVCAS Crest" className="w-full h-full object-contain" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-stone-900 text-sm">RVCAS Canteen</h3>
+                    <p className="text-[11px] text-stone-500">Rajagiri Viswajyothi</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-stone-900 text-sm">RVCAS Canteen</h3>
-                  <p className="text-[11px] text-stone-500">Rajagiri Viswajyothi</p>
-                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setMenuOpen(false)}
+                  className="w-8 h-8 rounded-lg bg-stone-200/60 hover:bg-stone-200 flex items-center justify-center text-stone-600 transition"
+                  title="Close menu"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
 
               <div className="mt-6 space-y-2 text-sm font-medium">
