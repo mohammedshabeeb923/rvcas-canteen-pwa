@@ -11,11 +11,23 @@ interface PeerStudent {
   courseSem: string;
 }
 
-const PEER_OPTIONS: PeerStudent[] = [
+const DEFAULT_PEERS: PeerStudent[] = [
   { id: 'student_albin', name: 'Albin John', courseSem: 'B.Com • Semester 5' },
   { id: 'student_nandana', name: 'Nandana P Nair', courseSem: 'BBA • Semester 3' },
   { id: 'student_jithin', name: 'Jithin Salim', courseSem: 'BCA • Semester 3' },
-  { id: 'student_fathima', name: 'Fathima Rifa', courseSem: 'B.Sc CS • Semester 1' },
+  { id: 'student_fathima', name: 'Fathima Rifa', courseSem: 'BSW • Semester 1' },
+];
+
+const COURSES = ['BCA', 'BBA', 'B.Com', 'BSW', 'Psychology'];
+const SEMESTERS = [
+  'Semester 1',
+  'Semester 2',
+  'Semester 3',
+  'Semester 4',
+  'Semester 5',
+  'Semester 6',
+  'Semester 7',
+  'Semester 8',
 ];
 
 export default function PaymentPage() {
@@ -24,9 +36,58 @@ export default function PaymentPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Multi-meal support
+  // Multi-meal support & Custom Classmate Additions
+  const [peerList, setPeerList] = useState<PeerStudent[]>(DEFAULT_PEERS);
   const [selectedPeers, setSelectedPeers] = useState<PeerStudent[]>([]);
   const [showPeerModal, setShowPeerModal] = useState(false);
+
+  // New Classmate Input States inside Popup
+  const [newName, setNewName] = useState('');
+  const [newCourse, setNewCourse] = useState('BCA');
+  const [newSemester, setNewSemester] = useState('Semester 3');
+  const [searchFilter, setSearchFilter] = useState('');
+
+  // Load memorized classmates from localStorage
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('rvcas_memorized_classmates');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setPeerList(parsed);
+          }
+        }
+      } catch (e) {}
+    }
+  }, []);
+
+  // Save to localStorage whenever classmates change
+  const saveClassmates = (updated: PeerStudent[]) => {
+    setPeerList(updated);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('rvcas_memorized_classmates', JSON.stringify(updated));
+      } catch (e) {}
+    }
+  };
+
+  const handleAddNewClassmate = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const cleanName = newName.trim();
+    if (!cleanName) return;
+
+    const newPeer: PeerStudent = {
+      id: `custom_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      name: cleanName,
+      courseSem: `${newCourse} • ${newSemester}`,
+    };
+
+    const updated = [newPeer, ...peerList.filter((p) => p.name.toLowerCase() !== cleanName.toLowerCase())];
+    saveClassmates(updated);
+    setSelectedPeers([...selectedPeers, newPeer]);
+    setNewName('');
+  };
 
   const mealPrice = 40;
   const totalMeals = 1 + selectedPeers.length;
@@ -355,66 +416,142 @@ export default function PaymentPage() {
         />
       </main>
 
-      {/* Multi-Student Selection Modal */}
+      {/* Multi-Student Selection Modal with Dropdowns & Memory */}
       {showPeerModal && (
         <div
           onClick={() => setShowPeerModal(false)}
-          className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-4"
+          className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-3 sm:p-4"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm bg-white rounded-3xl p-5 shadow-2xl space-y-4"
+            className="w-full max-w-sm bg-white rounded-3xl p-5 shadow-2xl space-y-4 max-h-[90vh] flex flex-col"
           >
-            <div className="flex items-center justify-between">
-              <h4 className="text-sm font-bold text-stone-900">Add Classmate Meal</h4>
+            {/* Header */}
+            <div className="flex items-center justify-between pb-1 border-b border-stone-100">
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-[#6B1D2F]" />
+                <h4 className="text-sm font-extrabold text-stone-900">Add Classmate Meal</h4>
+              </div>
               <button
                 onClick={() => setShowPeerModal(false)}
-                className="text-xs font-semibold text-stone-400 hover:text-stone-600"
+                className="text-xs font-bold text-stone-400 hover:text-stone-700 p-1"
               >
-                Close
+                ✕ Close
               </button>
             </div>
 
-            <p className="text-xs text-stone-500">
-              Each student receives an independent digital meal pass and verification token.
-            </p>
+            {/* Quick Add Classmate Form */}
+            <form onSubmit={handleAddNewClassmate} className="p-3 bg-[#FAF7F2] rounded-2xl border border-stone-200/80 space-y-2.5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#6B1D2F] block">
+                Enter Classmate Details
+              </span>
 
-            <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-              {PEER_OPTIONS.map((peer) => {
+              {/* Student Name */}
+              <div>
+                <input
+                  type="text"
+                  required
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  placeholder="Student Full Name (e.g. Albin John)"
+                  className="w-full px-3 py-2 text-xs font-semibold bg-white border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B1D2F]/20 focus:border-[#6B1D2F]"
+                />
+              </div>
+
+              {/* Two Dropdowns in 1 row: Department & Semester */}
+              <div className="grid grid-cols-2 gap-2">
+                {/* Department Dropdown */}
+                <div>
+                  <label className="block text-[10px] font-bold text-stone-500 mb-1">
+                    Department
+                  </label>
+                  <select
+                    value={newCourse}
+                    onChange={(e) => setNewCourse(e.target.value)}
+                    className="w-full px-2.5 py-2 text-xs font-bold text-stone-800 bg-white border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B1D2F]/20 focus:border-[#6B1D2F]"
+                  >
+                    {COURSES.map((course) => (
+                      <option key={course} value={course}>
+                        {course}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Semester Dropdown (1 to 8) */}
+                <div>
+                  <label className="block text-[10px] font-bold text-stone-500 mb-1">
+                    Semester
+                  </label>
+                  <select
+                    value={newSemester}
+                    onChange={(e) => setNewSemester(e.target.value)}
+                    className="w-full px-2.5 py-2 text-xs font-bold text-stone-800 bg-white border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B1D2F]/20 focus:border-[#6B1D2F]"
+                  >
+                    {SEMESTERS.map((sem) => (
+                      <option key={sem} value={sem}>
+                        {sem}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Add Button */}
+              <button
+                type="submit"
+                disabled={!newName.trim()}
+                className="w-full bg-[#6B1D2F] hover:bg-[#501220] disabled:opacity-50 text-white font-bold py-2 rounded-xl text-xs transition shadow-xs flex items-center justify-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Save &amp; Add Classmate (+₹40)</span>
+              </button>
+            </form>
+
+            {/* Memorized Classmates List */}
+            <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 min-h-[140px]">
+              <div className="flex items-center justify-between text-[11px] font-bold text-stone-400 px-1 pt-1">
+                <span>Select from Saved Classmates</span>
+                <span>{selectedPeers.length} selected</span>
+              </div>
+
+              {peerList.map((peer) => {
                 const isSelected = selectedPeers.some((p) => p.id === peer.id);
                 return (
                   <button
                     key={peer.id}
+                    type="button"
                     onClick={() => handleTogglePeer(peer)}
-                    className={`w-full flex items-center justify-between p-3 rounded-2xl border text-left transition ${
+                    className={`w-full flex items-center justify-between p-2.5 rounded-2xl border text-left transition ${
                       isSelected
-                        ? 'border-[#6B1D2F] bg-[#6B1D2F]/5'
-                        : 'border-stone-200 hover:bg-stone-50'
+                        ? 'border-[#6B1D2F] bg-[#6B1D2F]/5 ring-1 ring-[#6B1D2F]/30'
+                        : 'border-stone-200 hover:bg-stone-50 bg-white'
                     }`}
                   >
                     <div>
                       <p className="text-xs font-bold text-stone-900">{peer.name}</p>
-                      <p className="text-[11px] text-stone-500">{peer.courseSem}</p>
+                      <p className="text-[10px] font-medium text-stone-500">{peer.courseSem}</p>
                     </div>
                     <div
-                      className={`w-5 h-5 rounded-full flex items-center justify-center border ${
+                      className={`w-5 h-5 rounded-full flex items-center justify-center border transition ${
                         isSelected
-                          ? 'bg-[#6B1D2F] border-[#6B1D2F] text-white'
-                          : 'border-stone-300'
+                          ? 'bg-[#6B1D2F] border-[#6B1D2F] text-white shadow-xs'
+                          : 'border-stone-300 bg-stone-50'
                       }`}
                     >
-                      {isSelected && <Check className="w-3 h-3" />}
+                      {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
                   </button>
                 );
               })}
             </div>
 
+            {/* Bottom Done Button */}
             <button
               onClick={() => setShowPeerModal(false)}
-              className="w-full bg-[#6B1D2F] text-white py-3 rounded-xl font-bold text-xs transition"
+              className="w-full bg-[#6B1D2F] hover:bg-[#501220] text-white py-3 rounded-2xl font-bold text-xs transition shadow-md"
             >
-              Done ({selectedPeers.length} added)
+              Done ({selectedPeers.length} added • Total: ₹{totalAmount})
             </button>
           </div>
         </div>

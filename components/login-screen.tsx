@@ -77,7 +77,7 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
         {/* TOP SECTION: College Campus Photo INSIDE the mobile screen */}
         <div className="relative h-[38%] min-h-[220px] w-full overflow-hidden shrink-0">
           <img
-            src="/images/rvcas-campus.jpg"
+            src="/images/rvcas-campus-uhd.jpg"
             alt="Rajagiri Viswajyothi College Campus"
             className="w-full h-full object-cover object-bottom"
           />

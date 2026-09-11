@@ -52,7 +52,7 @@ export function WelcomeScreen({ onEnter }: WelcomeScreenProps) {
         {/* MIDDLE & LOWER SECTION: Aerial College Campus Picture */}
         <div className="absolute inset-x-0 bottom-0 top-[38%] z-10 overflow-hidden">
           <img
-            src="/images/rvcas-campus.jpg"
+            src="/images/rvcas-campus-uhd.jpg"
             alt="Rajagiri Viswajyothi College Campus"
             className="w-full h-full object-cover object-bottom"
           />
