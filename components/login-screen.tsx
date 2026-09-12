@@ -74,29 +74,29 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
       {/* Mobile Screen Container */}
       <div className="w-full max-w-sm h-full sm:h-[844px] sm:max-h-[92vh] sm:rounded-[2.5rem] sm:border sm:border-stone-300/80 sm:shadow-2xl overflow-hidden relative flex flex-col justify-between bg-[#FAF7F2]">
         
-        {/* TOP SECTION: College Campus Photo INSIDE the mobile screen */}
-        <div className="relative h-[28%] min-h-[160px] max-h-[220px] w-full overflow-hidden shrink-0">
+        {/* TOP SECTION: College Campus Photo focused on the Main Academic Building */}
+        <div className="relative h-[29%] min-h-[170px] max-h-[225px] w-full overflow-hidden shrink-0">
           <img
             src="/images/rvcas-campus-uhd.jpg"
-            alt="Rajagiri Viswajyothi College Campus"
-            className="w-full h-full object-cover object-bottom"
+            alt="Rajagiri Viswajyothi College Building"
+            className="w-full h-full object-cover object-[center_52%]"
           />
-          {/* Subtle Maroon-tinted gradient overlay for college identity */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#380B16]/75 via-[#4A1220]/45 to-[#FAF7F2]/95" />
+          {/* Subtle vignette overlay to keep building clear while ensuring header readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-black/30" />
 
           {/* Top College Header Bar */}
           <div className="absolute top-4 inset-x-0 px-4 flex items-center justify-between text-white z-10">
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/90 drop-shadow">
+            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/95 drop-shadow-md">
               RVCAS • DINING PORTAL
             </span>
-            <span className="text-[10px] font-semibold bg-black/40 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/20 text-white/90">
+            <span className="text-[10px] font-semibold bg-black/45 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/20 text-white/95 shadow-sm">
               Rajagiri
             </span>
           </div>
 
-          {/* Circular Crest Logo cleanly centered across the seam */}
-          <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 z-20">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white p-1.5 shadow-xl ring-4 ring-[#FAF7F2] flex items-center justify-center">
+          {/* Circular Crest Logo taken upwards inside the photo */}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white p-1.5 shadow-xl ring-3 ring-white/90 flex items-center justify-center">
               <img
                 src="/images/rvcas-crest.png"
                 alt="RVCAS Crest"
@@ -107,7 +107,7 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
         </div>
 
         {/* BOTTOM FORM SHEET: Clean & Human-Designed */}
-        <div className="flex-1 flex flex-col justify-between pt-8 px-5 pb-4 overflow-y-auto z-10">
+        <div className="flex-1 flex flex-col justify-between pt-5 sm:pt-6 px-5 pb-4 overflow-y-auto z-10">
           
           {/* Titles */}
           <div className="text-center space-y-0.5">
