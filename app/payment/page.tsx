@@ -318,66 +318,114 @@ export default function PaymentPage() {
           <div className="bg-white rounded-3xl p-2 shadow-card border border-stone-200/70 space-y-1">
             {/* UPI Option */}
             <button
+              type="button"
               onClick={() => setSelectedMethod('upi')}
               className={`w-full flex items-center justify-between p-3.5 rounded-2xl transition ${
-                selectedMethod === 'upi' ? 'bg-[#6B1D2F]/5' : 'hover:bg-stone-50'
+                selectedMethod === 'upi' ? 'bg-[#6B1D2F]/5 ring-1 ring-[#6B1D2F]/30' : 'hover:bg-stone-50'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-stone-100 flex items-center justify-center font-bold text-xs text-stone-700">
-                  UPI
+              <div className="flex items-center gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-white border border-stone-200/90 shadow-xs flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+                  <img
+                    src="/images/logos/upi.svg"
+                    alt="UPI"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
-                <span className="text-sm font-semibold text-stone-800">UPI ID / QR</span>
+                <div className="text-left">
+                  <span className="text-sm font-bold text-stone-900 block leading-tight">UPI ID / QR</span>
+                  <span className="text-[11px] text-stone-500 font-medium">Instant zero-fee transfer</span>
+                </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-stone-400" />
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition ${
+                selectedMethod === 'upi' ? 'border-[#6B1D2F] bg-[#6B1D2F]' : 'border-stone-300'
+              }`}>
+                {selectedMethod === 'upi' && <div className="w-2 h-2 rounded-full bg-white" />}
+              </div>
             </button>
 
             {/* Google Pay */}
             <button
+              type="button"
               onClick={() => setSelectedMethod('gpay')}
               className={`w-full flex items-center justify-between p-3.5 rounded-2xl transition ${
-                selectedMethod === 'gpay' ? 'bg-[#6B1D2F]/5' : 'hover:bg-stone-50'
+                selectedMethod === 'gpay' ? 'bg-[#6B1D2F]/5 ring-1 ring-[#6B1D2F]/30' : 'hover:bg-stone-50'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs">
-                  GPay
+              <div className="flex items-center gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-white border border-stone-200/90 shadow-xs flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+                  <img
+                    src="/images/logos/gpay.svg"
+                    alt="Google Pay"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
-                <span className="text-sm font-semibold text-stone-800">Google Pay</span>
+                <div className="text-left">
+                  <span className="text-sm font-bold text-stone-900 block leading-tight">Google Pay</span>
+                  <span className="text-[11px] text-stone-500 font-medium">Pay via GPay UPI</span>
+                </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-stone-400" />
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition ${
+                selectedMethod === 'gpay' ? 'border-[#6B1D2F] bg-[#6B1D2F]' : 'border-stone-300'
+              }`}>
+                {selectedMethod === 'gpay' && <div className="w-2 h-2 rounded-full bg-white" />}
+              </div>
             </button>
 
             {/* PhonePe */}
             <button
+              type="button"
               onClick={() => setSelectedMethod('phonepe')}
               className={`w-full flex items-center justify-between p-3.5 rounded-2xl transition ${
-                selectedMethod === 'phonepe' ? 'bg-[#6B1D2F]/5' : 'hover:bg-stone-50'
+                selectedMethod === 'phonepe' ? 'bg-[#6B1D2F]/5 ring-1 ring-[#6B1D2F]/30' : 'hover:bg-stone-50'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center font-bold text-xs">
-                  Pe
+              <div className="flex items-center gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-white border border-stone-200/90 shadow-xs flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                  <img
+                    src="/images/logos/phonepe.svg"
+                    alt="PhonePe"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
-                <span className="text-sm font-semibold text-stone-800">PhonePe</span>
+                <div className="text-left">
+                  <span className="text-sm font-bold text-stone-900 block leading-tight">PhonePe</span>
+                  <span className="text-[11px] text-stone-500 font-medium">Pay via PhonePe UPI</span>
+                </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-stone-400" />
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition ${
+                selectedMethod === 'phonepe' ? 'border-[#6B1D2F] bg-[#6B1D2F]' : 'border-stone-300'
+              }`}>
+                {selectedMethod === 'phonepe' && <div className="w-2 h-2 rounded-full bg-white" />}
+              </div>
             </button>
 
             {/* Paytm */}
             <button
+              type="button"
               onClick={() => setSelectedMethod('paytm')}
               className={`w-full flex items-center justify-between p-3.5 rounded-2xl transition ${
-                selectedMethod === 'paytm' ? 'bg-[#6B1D2F]/5' : 'hover:bg-stone-50'
+                selectedMethod === 'paytm' ? 'bg-[#6B1D2F]/5 ring-1 ring-[#6B1D2F]/30' : 'hover:bg-stone-50'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold text-xs">
-                  paytm
+              <div className="flex items-center gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-white border border-stone-200/90 shadow-xs flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+                  <img
+                    src="/images/logos/paytm.svg"
+                    alt="Paytm"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
-                <span className="text-sm font-semibold text-stone-800">Paytm</span>
+                <div className="text-left">
+                  <span className="text-sm font-bold text-stone-900 block leading-tight">Paytm</span>
+                  <span className="text-[11px] text-stone-500 font-medium">Paytm Wallet &amp; UPI</span>
+                </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-stone-400" />
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition ${
+                selectedMethod === 'paytm' ? 'border-[#6B1D2F] bg-[#6B1D2F]' : 'border-stone-300'
+              }`}>
+                {selectedMethod === 'paytm' && <div className="w-2 h-2 rounded-full bg-white" />}
+              </div>
             </button>
           </div>
         </div>
