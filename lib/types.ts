@@ -9,7 +9,7 @@ export interface Student {
   semester: string;
   studentIdCode: string;
   profilePhoto?: string;
-  studentType?: 'day_scholar' | 'hosteller';
+  studentType?: 'day_scholar' | 'hosteller' | 'faculty';
   hostelRoom?: string;
   department?: string;
 }

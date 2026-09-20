@@ -5,48 +5,36 @@ import { db } from '@/lib/db';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, identifier, phone, password, role = 'student', pin, rememberMe = true } = body;
+    const { email, identifier, phone, password, role = 'student', selectedRole, pin, rememberMe = true } = body;
 
     const durationDays = rememberMe ? 30 : 7;
     const expiresAt = Date.now() + durationDays * 24 * 60 * 60 * 1000;
     const cookieMaxAge = durationDays * 24 * 60 * 60;
 
     // ==========================================
-    // 1. STUDENT AUTHENTICATION (Phone + Password)
+    // 1. DAY SCHOLAR, HOSTELLER & FACULTY AUTHENTICATION (Phone + Password)
     // ==========================================
-    if (role === 'student') {
+    if (role === 'student' || role === 'day_scholar' || role === 'hosteller' || role === 'faculty') {
       const studentSearch = (phone || identifier || '').trim();
       let student = studentSearch ? (db.getStudentByPhone(studentSearch) || db.getStudentByIdentifier(studentSearch)) : undefined;
 
-      // If student not found, check if valid 10-digit number and auto-enroll or return clear error
+      // If student not found, fallback to demo user based on selected role
       if (!student) {
-        const cleanDigits = studentSearch.replace(/[^0-9]/g, '').slice(-10);
-        if (cleanDigits.length === 10) {
-          student = db.createOrUpdateStudent({
-            id: `student_${cleanDigits}`,
-            name: 'Student',
-            phone: cleanDigits,
-            course: 'BCA',
-            semester: 'Semester 3',
-            studentIdCode: `RVCAS/2024/STU/${cleanDigits.slice(-3)}`,
-            studentType: 'day_scholar',
-          });
-        } else if (!studentSearch) {
-          return NextResponse.json(
-            {
-              success: false,
-              error: 'Please enter your registered 10-digit mobile number.',
-            },
-            { status: 400 }
-          );
+        if (!studentSearch || studentSearch.includes('9847123456') || studentSearch.toLowerCase().includes('shabeeb')) {
+          student = db.getStudentById('student_shabeeb');
+        } else if (studentSearch.includes('9847111222') || studentSearch.includes('9847123457') || studentSearch.toLowerCase().includes('albin')) {
+          student = db.getStudentById('student_albin');
+        } else if (studentSearch.includes('9847123400') || studentSearch.toLowerCase().includes('mathew')) {
+          student = db.getStudentById('faculty_mathew');
         } else {
-          return NextResponse.json(
-            {
-              success: false,
-              error: `Please enter a valid 10-digit mobile number to sign in.`,
-            },
-            { status: 400 }
-          );
+          const allStudents = db.getStudents();
+          if (selectedRole === 'faculty' || role === 'faculty') {
+            student = allStudents.find(s => s.studentType === 'faculty') || allStudents[0];
+          } else if (selectedRole === 'hosteller' || role === 'hosteller') {
+            student = allStudents.find(s => s.studentType === 'hosteller') || allStudents[0];
+          } else {
+            student = allStudents.find(s => s.studentType === 'day_scholar') || allStudents[0];
+          }
         }
       }
 
@@ -54,11 +42,29 @@ export async function POST(req: Request) {
         student = db.getStudents()[0];
       }
 
+      // Role is determined strictly by the selected role from the "Who are you?" screen
+      const effectiveType: 'day_scholar' | 'hosteller' | 'faculty' =
+        (selectedRole as any) ||
+        (role === 'hosteller'
+          ? 'hosteller'
+          : role === 'faculty'
+          ? 'faculty'
+          : student.studentType || 'day_scholar');
+
+      const effectiveRole: 'student' | 'hosteller' | 'faculty' =
+        effectiveType === 'hosteller'
+          ? 'hosteller'
+          : effectiveType === 'faculty'
+          ? 'faculty'
+          : 'student';
+
       const sessionData: AuthSession = {
         userId: student.id,
         name: student.name,
         email: student.email,
-        role: 'student',
+        role: effectiveRole,
+        studentType: effectiveType,
+        hostelRoom: student.hostelRoom,
         studentIdCode: student.studentIdCode,
         courseSem: `${student.course} • ${student.semester}`,
         expiresAt,
@@ -73,7 +79,9 @@ export async function POST(req: Request) {
           id: student.id,
           name: student.name,
           email: student.email,
-          role: 'student',
+          role: effectiveRole,
+          studentType: effectiveType,
+          hostelRoom: student.hostelRoom,
           studentIdCode: student.studentIdCode,
           courseSem: `${student.course} • ${student.semester}`,
         },

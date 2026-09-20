@@ -90,6 +90,17 @@ const initialSeed: DatabaseState = {
       studentType: 'hosteller',
       hostelRoom: 'Room 105',
     },
+    {
+      id: 'faculty_mathew',
+      name: 'Prof. Mathew Joseph',
+      email: 'mathew.joseph@rvcas.ac.in',
+      phone: '9847123400',
+      course: 'Computer Science',
+      semester: 'Faculty',
+      studentIdCode: 'FAC/CS/014',
+      studentType: 'faculty',
+      department: 'Department of Computer Science',
+    },
   ],
   meals: [
     {
@@ -338,6 +349,14 @@ function readDb(): DatabaseState {
           modified = true;
         }
       });
+
+      // Ensure missing seed students (like faculty) are included
+      initialSeed.students.forEach((seedStudent: Student) => {
+        if (!parsed.students.some((s: Student) => s.id === seedStudent.id)) {
+          parsed.students.push(seedStudent);
+          modified = true;
+        }
+      });
     }
 
     if (modified) {
@@ -386,23 +405,6 @@ export const db = {
     return readDb().students.find(s => 
       s.phone && s.phone.replace(/[^0-9]/g, '').slice(-10) === digits
     );
-  },
-  createOrUpdateStudent: (student: Student): Student => {
-    const state = readDb();
-    const digits = student.phone ? student.phone.replace(/[^0-9]/g, '').slice(-10) : '';
-    const index = state.students.findIndex(s => 
-      s.id === student.id || 
-      (digits && s.phone && s.phone.replace(/[^0-9]/g, '').slice(-10) === digits)
-    );
-    if (index >= 0) {
-      state.students[index] = { ...state.students[index], ...student };
-      writeDb(state);
-      return state.students[index];
-    } else {
-      state.students.push(student);
-      writeDb(state);
-      return student;
-    }
   },
   createOrder: (order: Order): Order => {
     const state = readDb();

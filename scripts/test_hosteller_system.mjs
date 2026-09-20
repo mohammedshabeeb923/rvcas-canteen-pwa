@@ -27,7 +27,24 @@ const hostellerMap = {
   student_fathima: { studentType: 'hosteller', hostelRoom: 'Room 305' },
   student_albin: { studentType: 'day_scholar' },
   student_jithin: { studentType: 'day_scholar' },
+  faculty_mathew: { studentType: 'faculty', department: 'Department of Computer Science' },
 };
+
+// Ensure faculty_mathew exists in db.students
+if (!db.students.some((s) => s.id === 'faculty_mathew')) {
+  db.students.push({
+    id: 'faculty_mathew',
+    name: 'Prof. Mathew Joseph',
+    email: 'mathew.joseph@rvcas.ac.in',
+    phone: '9847123400',
+    course: 'Computer Science',
+    semester: 'Faculty',
+    studentIdCode: 'FAC/CS/014',
+    studentType: 'faculty',
+    department: 'Department of Computer Science',
+  });
+  modified = true;
+}
 
 (db.students || []).forEach((s) => {
   if (hostellerMap[s.id]) {

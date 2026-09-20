@@ -1,23 +1,45 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Lock, Eye, EyeOff, ArrowRight, ShieldCheck, ArrowLeft } from 'lucide-react';
 
 interface LoginScreenProps {
   onSuccess: (user: any) => void;
+  selectedRole?: 'day_scholar' | 'hosteller' | 'faculty' | 'staff' | 'admin';
   defaultRole?: 'student' | 'staff' | 'admin';
+  onBackToRoles?: () => void;
 }
 
-export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenProps) {
-  const [isStaffMode, setIsStaffMode] = useState(defaultRole !== 'student');
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [pin, setPin] = useState('');
+export function LoginScreen({
+  onSuccess,
+  selectedRole,
+  defaultRole = 'student',
+  onBackToRoles,
+}: LoginScreenProps) {
+  const [isStaffMode, setIsStaffMode] = useState(
+    defaultRole !== 'student' || selectedRole === 'staff' || selectedRole === 'admin'
+  );
+
+  const getInitialPhone = () => {
+    if (selectedRole === 'hosteller') return '9847123456';
+    if (selectedRole === 'faculty') return '9847123400';
+    return '9847111222';
+  };
+
+  const [phone, setPhone] = useState(getInitialPhone());
+  const [password, setPassword] = useState('123456');
+  const [email, setEmail] = useState('shibinsha@gmail.com');
+  const [pin, setPin] = useState('842601');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setPhone(getInitialPhone());
+    setIsStaffMode(selectedRole === 'staff' || selectedRole === 'admin');
+    setError(null);
+  }, [selectedRole]);
 
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -26,7 +48,8 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
 
     try {
       const payload: any = {
-        role: isStaffMode ? 'staff' : 'student',
+        role: isStaffMode ? 'staff' : (selectedRole || 'student'),
+        selectedRole: isStaffMode ? 'staff' : (selectedRole || 'day_scholar'),
         rememberMe,
       };
 
@@ -69,6 +92,20 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
     }
   };
 
+  const getHeaderTitle = () => {
+    if (isStaffMode) return 'Staff & Admin Console';
+    if (selectedRole === 'hosteller') return 'Hosteller Sign In';
+    if (selectedRole === 'faculty') return 'Faculty Sign In';
+    return 'Day Scholar Sign In';
+  };
+
+  const getHeaderSubtitle = () => {
+    if (isStaffMode) return 'Authorized canteen personnel & admin access';
+    if (selectedRole === 'hosteller') return 'Enter mobile number to declare your meal requirements';
+    if (selectedRole === 'faculty') return 'Enter mobile number to book faculty lunch coupon';
+    return 'Enter mobile number to book today’s lunch';
+  };
+
   return (
     <div className="h-[100dvh] w-full bg-[#FAF7F2] sm:bg-[#F4EFE6] flex justify-center items-center overflow-hidden sm:p-4">
       {/* Mobile Screen Container */}
@@ -84,11 +121,23 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
           {/* Subtle vignette overlay to keep building clear while ensuring header readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-black/30" />
 
-          {/* Top College Header Bar */}
+          {/* Top College Header Bar with Back to Roles if applicable */}
           <div className="absolute top-4 inset-x-0 px-4 flex items-center justify-between text-white z-10">
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/95 drop-shadow-md">
-              RVCAS • DINING PORTAL
-            </span>
+            {onBackToRoles ? (
+              <button
+                type="button"
+                onClick={onBackToRoles}
+                className="inline-flex items-center gap-1 text-[11px] font-bold bg-black/45 hover:bg-black/65 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20 text-white/95 shadow-sm transition cursor-pointer"
+              >
+                <ArrowLeft className="w-3 h-3" />
+                <span>Change Role</span>
+              </button>
+            ) : (
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/95 drop-shadow-md">
+                RVCAS • DINING PORTAL
+              </span>
+            )}
+
             <span className="text-[10px] font-semibold bg-black/45 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/20 text-white/95 shadow-sm">
               Rajagiri
             </span>
@@ -120,12 +169,10 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
 
             <div className="pt-2">
               <h2 className="text-sm sm:text-base font-extrabold text-stone-900 tracking-tight">
-                {isStaffMode ? 'Staff & Admin Console' : 'Student Sign In'}
+                {getHeaderTitle()}
               </h2>
               <p className="text-[11px] text-stone-500 mt-0.5">
-                {isStaffMode
-                  ? 'Authorized canteen personnel & admin access'
-                  : 'Enter mobile number to book today’s lunch'}
+                {getHeaderSubtitle()}
               </p>
             </div>
           </div>
@@ -150,7 +197,7 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
                       maxLength={10}
                       value={phone}
                       onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
-                      placeholder="9847123456"
+                      placeholder={getInitialPhone()}
                       className="w-full px-3 py-2.5 text-stone-900 placeholder:text-stone-300 text-sm font-bold tracking-wider focus:outline-none"
                     />
                   </div>
@@ -180,6 +227,69 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
+                  </div>
+
+                  {/* Quick Demo Accounts */}
+                  <div className="pt-1.5 flex flex-wrap items-center gap-1.5">
+                    <span className="text-[10px] font-bold text-stone-400">Quick Test:</span>
+                    {selectedRole === 'hosteller' ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPhone('9847123456');
+                            setPassword('123456');
+                          }}
+                          className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[#6B1D2F]/10 text-[#6B1D2F] hover:bg-[#6B1D2F]/20 transition"
+                        >
+                          ⚡ Shabeeb (Hosteller)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPhone('9847234567');
+                            setPassword('123456');
+                          }}
+                          className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-purple-100 text-purple-800 hover:bg-purple-200 transition"
+                        >
+                          ⚡ Nandana (Hosteller)
+                        </button>
+                      </>
+                    ) : selectedRole === 'faculty' ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPhone('9847123400');
+                          setPassword('123456');
+                        }}
+                        className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 hover:bg-emerald-200 transition"
+                      >
+                        ⚡ Prof. Mathew (Faculty)
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPhone('9847111222');
+                            setPassword('123456');
+                          }}
+                          className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-stone-200 text-stone-700 hover:bg-stone-300 transition"
+                        >
+                          ⚡ Albin (Day Scholar)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPhone('9847123459');
+                            setPassword('123456');
+                          }}
+                          className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-stone-200 text-stone-700 hover:bg-stone-300 transition"
+                        >
+                          ⚡ Jithin (Day Scholar)
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               </>
@@ -275,11 +385,22 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
 
           {/* Bottom Switcher & Security Footer */}
           <div className="pt-2 border-t border-stone-200/80 text-center space-y-1.5">
+            {onBackToRoles && (
+              <button
+                type="button"
+                onClick={onBackToRoles}
+                className="text-xs font-semibold text-stone-600 hover:text-stone-900 flex items-center justify-center gap-1 mx-auto cursor-pointer mb-1"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Back to Role Selection</span>
+              </button>
+            )}
+
             {!isStaffMode ? (
               <button
                 type="button"
                 onClick={() => { setIsStaffMode(true); setError(null); }}
-                className="text-xs font-semibold text-[#6B1D2F] hover:underline cursor-pointer"
+                className="text-xs font-semibold text-[#6B1D2F] hover:underline cursor-pointer block mx-auto"
               >
                 Canteen Staff or Administrator? Sign In Here →
               </button>
@@ -290,7 +411,7 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
                 className="text-xs font-semibold text-[#6B1D2F] hover:underline flex items-center justify-center gap-1 mx-auto cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Back to Student Sign In</span>
+                <span>Back to User Sign In</span>
               </button>
             )}
 

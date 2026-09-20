@@ -30,8 +30,8 @@ export interface AuthSession {
   userId: string;
   email?: string;
   name: string;
-  role: 'student' | 'hosteller' | 'staff' | 'admin';
-  studentType?: 'day_scholar' | 'hosteller';
+  role: 'student' | 'hosteller' | 'faculty' | 'staff' | 'admin';
+  studentType?: 'day_scholar' | 'hosteller' | 'faculty';
   studentIdCode?: string;
   courseSem?: string;
   hostelRoom?: string;

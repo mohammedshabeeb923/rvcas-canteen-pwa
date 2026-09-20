@@ -193,6 +193,28 @@ export function AuthGate({ requiredRole, title, subtitle, children }: AuthGatePr
             )}
           </button>
         </form>
+
+        {/* Quick Fill for Fast Testing */}
+        <div className="pt-2 border-t border-stone-100 text-center space-y-1.5">
+          <span className="text-[10px] text-stone-400 font-semibold uppercase tracking-wider block">
+            Authorized Demo Accounts
+          </span>
+          <div className="flex flex-wrap gap-1.5 justify-center">
+            {['shibinsha@gmail.com', 'canteen.staff@gmail.com', 'admin@rvcas.ac.in'].map((demo) => (
+              <button
+                key={demo}
+                type="button"
+                onClick={() => {
+                  setEmail(demo);
+                  setPin('842601');
+                }}
+                className="text-[10px] bg-stone-100 hover:bg-stone-200 text-stone-700 font-mono px-2 py-1 rounded-lg transition"
+              >
+                {demo}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

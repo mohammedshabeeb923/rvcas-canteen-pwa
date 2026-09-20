@@ -53,6 +53,17 @@
       "studentIdCode": "RVCAS/2025/BCS/008",
       "studentType": "hosteller",
       "hostelRoom": "Room 305"
+    },
+    {
+      "id": "faculty_mathew",
+      "name": "Prof. Mathew Joseph",
+      "email": "mathew.joseph@rvcas.ac.in",
+      "phone": "9847123400",
+      "course": "Computer Science",
+      "semester": "Faculty",
+      "studentIdCode": "FAC/CS/014",
+      "studentType": "faculty",
+      "department": "Department of Computer Science"
     }
   ],
   "meals": [

@@ -5,13 +5,16 @@ import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/navbar';
 import { BottomNav } from '@/components/bottom-nav';
 import { WelcomeScreen } from '@/components/welcome-screen';
+import { RoleSelectionScreen, UserRoleChoice } from '@/components/role-selection-screen';
 import { LoginScreen } from '@/components/login-screen';
+import { HostellerDashboard } from '@/components/hosteller/hosteller-dashboard';
 import { Utensils, CheckCircle2, ArrowRight, Sparkles, Building2, ExternalLink } from 'lucide-react';
 
 export default function FirstPage() {
   const router = useRouter();
-  // Starts on 'welcome', transitions to 'login' (or 'home' if persistent session exists)
-  const [currentView, setCurrentView] = useState<'welcome' | 'login' | 'home'>('welcome');
+  // Starts on 'role_select' ("Who are you?"), transitions to 'login', then 'home'
+  const [currentView, setCurrentView] = useState<'role_select' | 'login' | 'home'>('role_select');
+  const [selectedRole, setSelectedRole] = useState<'day_scholar' | 'hosteller' | 'faculty' | 'staff' | 'admin'>('day_scholar');
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [mealStatus, setMealStatus] = useState<'NOT_PURCHASED' | 'VALID' | 'SERVED'>('NOT_PURCHASED');
   const [activePass, setActivePass] = useState<any>(null);
@@ -26,10 +29,27 @@ export default function FirstPage() {
       .then((data) => {
         if (data.authenticated && data.user) {
           setCurrentUser(data.user);
+          if (data.user.role === 'staff') {
+            router.push('/staff');
+          } else if (data.user.role === 'admin') {
+            router.push('/admin');
+          } else {
+            setCurrentView('home');
+          }
         } else if (typeof window !== 'undefined') {
           const cached = localStorage.getItem('rvcas_user');
           if (cached) {
-            try { setCurrentUser(JSON.parse(cached)); } catch (e) {}
+            try {
+              const u = JSON.parse(cached);
+              setCurrentUser(u);
+              if (u.role === 'staff') {
+                router.push('/staff');
+              } else if (u.role === 'admin') {
+                router.push('/admin');
+              } else {
+                setCurrentView('home');
+              }
+            } catch (e) {}
           }
         }
       })
@@ -57,7 +77,7 @@ export default function FirstPage() {
         }
       })
       .catch((err) => console.error(err));
-  }, [currentUser?.id]);
+  }, [currentUser?.id, router]);
 
   const todayFormatted = new Date().toLocaleDateString('en-GB', {
     weekday: 'long',
@@ -66,36 +86,37 @@ export default function FirstPage() {
     year: 'numeric',
   });
 
-  const handleWelcomeComplete = () => {
-    // Check if user is already authenticated
-    const cached = currentUser || (typeof window !== 'undefined' && localStorage.getItem('rvcas_user') ? JSON.parse(localStorage.getItem('rvcas_user')!) : null);
-    if (cached) {
-      if (cached.role === 'staff') {
-        router.push('/staff');
-      } else if (cached.role === 'admin') {
-        router.push('/admin');
-      } else {
-        setCurrentView('home');
-      }
-    } else {
-      setCurrentView('login');
-    }
-  };
-
   const handleLogout = () => {
     setCurrentUser(null);
-    setCurrentView('login');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('rvcas_user');
+      localStorage.removeItem('rvcas_token');
+    }
+    setCurrentView('role_select');
   };
 
-  // SCREEN 1: WELCOME SPLASH SCREEN (Auto-transitions after 2 seconds)
-  if (currentView === 'welcome') {
-    return <WelcomeScreen onEnter={handleWelcomeComplete} />;
+  // SCREEN 1: "WHO ARE YOU?" ROLE SELECTION SCREEN
+  if (currentView === 'role_select') {
+    return (
+      <RoleSelectionScreen
+        onSelectRole={(role) => {
+          setSelectedRole(role);
+          setCurrentView('login');
+        }}
+        onStaffLogin={() => {
+          setSelectedRole('staff');
+          setCurrentView('login');
+        }}
+      />
+    );
   }
 
-  // SCREEN 2: DEDICATED LOGIN SCREEN (If not authenticated)
+  // SCREEN 2: DEDICATED LOGIN SCREEN (Configured for Selected Role)
   if (currentView === 'login') {
     return (
       <LoginScreen
+        selectedRole={selectedRole}
+        onBackToRoles={() => setCurrentView('role_select')}
         onSuccess={(user) => {
           setCurrentUser(user);
           if (user.role === 'staff') {
@@ -117,16 +138,20 @@ export default function FirstPage() {
       <Navbar activeRole="student" onLogout={handleLogout} />
 
       <main className="max-w-md mx-auto px-4 pt-4">
-        {/* Welcome Greeting with Dynamic Student Name */}
-        <div className="mb-4">
-          <p className="text-sm text-stone-500 font-medium">Good afternoon,</p>
-          <h2 className="text-2xl font-black text-[#6B1D2F] tracking-tight leading-tight">
-            {currentUser?.name || 'Student'} 👋
-          </h2>
-          <p className="text-xs text-stone-500 font-medium mt-0.5">
-            {currentUser?.courseSem || 'BCA • Semester 3'} — Ready for lunch?
-          </p>
-        </div>
+        {currentUser?.studentType === 'hosteller' || currentUser?.role === 'hosteller' ? (
+          <HostellerDashboard currentUser={currentUser} />
+        ) : (
+          <>
+            {/* Welcome Greeting with Dynamic Student Name */}
+            <div className="mb-4">
+              <p className="text-sm text-stone-500 font-medium">Good afternoon,</p>
+              <h2 className="text-2xl font-black text-[#6B1D2F] tracking-tight leading-tight">
+                {currentUser?.name || 'Albin'} 👋
+              </h2>
+              <p className="text-xs text-stone-500 font-medium mt-0.5">
+                {currentUser?.courseSem || 'BCA • Semester 3'} — Ready for lunch?
+              </p>
+            </div>
 
         {/* TODAY'S MEAL CARD: Royal Maroon theme */}
         <div className="bg-gradient-to-br from-[#6B1D2F] to-[#4A1220] text-white rounded-4xl p-5 shadow-xl border border-white/10 mb-5 relative overflow-hidden">
@@ -245,7 +270,9 @@ export default function FirstPage() {
             )}
           </div>
         </div>
-      </main>
+        </>
+      )}
+    </main>
 
       {/* Bottom Nav matching screenshot 2 */}
       <BottomNav />
