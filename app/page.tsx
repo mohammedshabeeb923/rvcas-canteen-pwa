@@ -6,6 +6,7 @@ import { Navbar } from '@/components/navbar';
 import { BottomNav } from '@/components/bottom-nav';
 import { WelcomeScreen } from '@/components/welcome-screen';
 import { LoginScreen } from '@/components/login-screen';
+import { HostellerDashboard } from '@/components/hosteller/hosteller-dashboard';
 import { Utensils, CheckCircle2, ArrowRight, Sparkles, Building2, ExternalLink } from 'lucide-react';
 
 export default function FirstPage() {
@@ -117,16 +118,20 @@ export default function FirstPage() {
       <Navbar activeRole="student" onLogout={handleLogout} />
 
       <main className="max-w-md mx-auto px-4 pt-4">
-        {/* Welcome Greeting with Dynamic Student Name */}
-        <div className="mb-4">
-          <p className="text-sm text-stone-500 font-medium">Good afternoon,</p>
-          <h2 className="text-2xl font-black text-[#6B1D2F] tracking-tight leading-tight">
-            {currentUser?.name || 'Shabeeb'} 👋
-          </h2>
-          <p className="text-xs text-stone-500 font-medium mt-0.5">
-            {currentUser?.courseSem || 'BCA • Semester 3'} — Ready for lunch?
-          </p>
-        </div>
+        {currentUser?.studentType === 'hosteller' || currentUser?.role === 'hosteller' ? (
+          <HostellerDashboard currentUser={currentUser} />
+        ) : (
+          <>
+            {/* Welcome Greeting with Dynamic Student Name */}
+            <div className="mb-4">
+              <p className="text-sm text-stone-500 font-medium">Good afternoon,</p>
+              <h2 className="text-2xl font-black text-[#6B1D2F] tracking-tight leading-tight">
+                {currentUser?.name || 'Albin'} 👋
+              </h2>
+              <p className="text-xs text-stone-500 font-medium mt-0.5">
+                {currentUser?.courseSem || 'BCA • Semester 3'} — Ready for lunch?
+              </p>
+            </div>
 
         {/* TODAY'S MEAL CARD: Royal Maroon theme */}
         <div className="bg-gradient-to-br from-[#6B1D2F] to-[#4A1220] text-white rounded-4xl p-5 shadow-xl border border-white/10 mb-5 relative overflow-hidden">
@@ -245,7 +250,9 @@ export default function FirstPage() {
             )}
           </div>
         </div>
-      </main>
+        </>
+      )}
+    </main>
 
       {/* Bottom Nav matching screenshot 2 */}
       <BottomNav />

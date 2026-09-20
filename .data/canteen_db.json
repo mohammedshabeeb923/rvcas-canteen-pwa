@@ -8,7 +8,9 @@
       "course": "BCA",
       "semester": "Semester 3",
       "studentIdCode": "RVCAS/2024/BCA/042",
-      "profilePhoto": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80"
+      "profilePhoto": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "studentType": "hosteller",
+      "hostelRoom": "Room 204"
     },
     {
       "id": "student_albin",
@@ -17,7 +19,8 @@
       "phone": "9847123457",
       "course": "B.Com",
       "semester": "Semester 5",
-      "studentIdCode": "RVCAS/2023/BCM/012"
+      "studentIdCode": "RVCAS/2023/BCM/012",
+      "studentType": "day_scholar"
     },
     {
       "id": "student_nandana",
@@ -26,7 +29,9 @@
       "phone": "9847123458",
       "course": "BBA",
       "semester": "Semester 3",
-      "studentIdCode": "RVCAS/2024/BBA/019"
+      "studentIdCode": "RVCAS/2024/BBA/019",
+      "studentType": "hosteller",
+      "hostelRoom": "Room 112"
     },
     {
       "id": "student_jithin",
@@ -35,7 +40,8 @@
       "phone": "9847123459",
       "course": "BCA",
       "semester": "Semester 3",
-      "studentIdCode": "RVCAS/2024/BCA/033"
+      "studentIdCode": "RVCAS/2024/BCA/033",
+      "studentType": "day_scholar"
     },
     {
       "id": "student_fathima",
@@ -44,7 +50,9 @@
       "phone": "9847123460",
       "course": "B.Sc CS",
       "semester": "Semester 1",
-      "studentIdCode": "RVCAS/2025/BCS/008"
+      "studentIdCode": "RVCAS/2025/BCS/008",
+      "studentType": "hosteller",
+      "hostelRoom": "Room 305"
     }
   ],
   "meals": [
@@ -1628,5 +1636,135 @@
   ],
   "meta": {
     "lastUpdated": "2026-09-11T18:04:32.788Z"
-  }
+  },
+  "specialMealDates": [
+    {
+      "id": "smd_20260926",
+      "date": "2026-09-26",
+      "title": "Weekend Meal Planning",
+      "dateType": "WEEKEND",
+      "description": "Hostel mess food requirement planning for Saturday",
+      "responseDeadline": "2026-09-25T20:00:00.000Z",
+      "isActive": true,
+      "isFinalized": false,
+      "mealsIncluded": [
+        "BREAKFAST",
+        "LUNCH",
+        "EVENING_SNACK",
+        "DINNER"
+      ],
+      "createdAt": "2026-09-20T00:00:00.000Z",
+      "updatedAt": "2026-09-20T00:00:00.000Z"
+    },
+    {
+      "id": "smd_20260927",
+      "date": "2026-09-27",
+      "title": "Sunday Hostel Planning",
+      "dateType": "WEEKEND",
+      "description": "Hostel mess food requirement planning for Sunday",
+      "responseDeadline": "2026-09-26T20:00:00.000Z",
+      "isActive": true,
+      "isFinalized": false,
+      "mealsIncluded": [
+        "BREAKFAST",
+        "LUNCH",
+        "EVENING_SNACK",
+        "DINNER"
+      ],
+      "createdAt": "2026-09-20T00:00:00.000Z",
+      "updatedAt": "2026-09-20T00:00:00.000Z"
+    },
+    {
+      "id": "smd_20260928",
+      "date": "2026-09-28",
+      "title": "Mahanavami Holiday",
+      "dateType": "HOLIDAY",
+      "description": "College closed for Mahanavami. Hostel dining schedule active.",
+      "responseDeadline": "2026-09-27T20:00:00.000Z",
+      "isActive": true,
+      "isFinalized": false,
+      "mealsIncluded": [
+        "BREAKFAST",
+        "LUNCH",
+        "EVENING_SNACK",
+        "DINNER"
+      ],
+      "createdAt": "2026-09-20T00:00:00.000Z",
+      "updatedAt": "2026-09-20T00:00:00.000Z"
+    }
+  ],
+  "hostellerMealResponses": [
+    {
+      "id": "hmr_shabeeb_20260926_breakfast",
+      "userId": "student_shabeeb",
+      "date": "2026-09-26",
+      "mealType": "BREAKFAST",
+      "response": "NEED_MEAL",
+      "submittedAt": "2026-09-24T10:00:00.000Z",
+      "updatedAt": "2026-09-24T10:00:00.000Z"
+    },
+    {
+      "id": "hmr_shabeeb_20260926_lunch",
+      "userId": "student_shabeeb",
+      "date": "2026-09-26",
+      "mealType": "LUNCH",
+      "response": "NEED_MEAL",
+      "submittedAt": "2026-09-24T10:00:00.000Z",
+      "updatedAt": "2026-09-24T10:00:00.000Z"
+    },
+    {
+      "id": "hmr_shabeeb_20260926_snack",
+      "userId": "student_shabeeb",
+      "date": "2026-09-26",
+      "mealType": "EVENING_SNACK",
+      "response": "DONT_NEED_MEAL",
+      "submittedAt": "2026-09-24T10:00:00.000Z",
+      "updatedAt": "2026-09-24T10:00:00.000Z"
+    },
+    {
+      "id": "hmr_shabeeb_20260926_dinner",
+      "userId": "student_shabeeb",
+      "date": "2026-09-26",
+      "mealType": "DINNER",
+      "response": "NEED_MEAL",
+      "submittedAt": "2026-09-24T10:00:00.000Z",
+      "updatedAt": "2026-09-24T10:00:00.000Z"
+    },
+    {
+      "id": "hmr_nandana_20260926_breakfast",
+      "userId": "student_nandana",
+      "date": "2026-09-26",
+      "mealType": "BREAKFAST",
+      "response": "NEED_MEAL",
+      "submittedAt": "2026-09-24T11:00:00.000Z",
+      "updatedAt": "2026-09-24T11:00:00.000Z"
+    },
+    {
+      "id": "hmr_nandana_20260926_lunch",
+      "userId": "student_nandana",
+      "date": "2026-09-26",
+      "mealType": "LUNCH",
+      "response": "DONT_NEED_MEAL",
+      "submittedAt": "2026-09-24T11:00:00.000Z",
+      "updatedAt": "2026-09-24T11:00:00.000Z"
+    },
+    {
+      "id": "hmr_nandana_20260926_snack",
+      "userId": "student_nandana",
+      "date": "2026-09-26",
+      "mealType": "EVENING_SNACK",
+      "response": "NEED_MEAL",
+      "submittedAt": "2026-09-24T11:00:00.000Z",
+      "updatedAt": "2026-09-24T11:00:00.000Z"
+    },
+    {
+      "id": "hmr_nandana_20260926_dinner",
+      "userId": "student_nandana",
+      "date": "2026-09-26",
+      "mealType": "DINNER",
+      "response": "NEED_MEAL",
+      "submittedAt": "2026-09-24T11:00:00.000Z",
+      "updatedAt": "2026-09-24T11:00:00.000Z"
+    }
+  ]
 }

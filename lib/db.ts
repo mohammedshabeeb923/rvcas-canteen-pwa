@@ -1,6 +1,19 @@
 import fs from 'fs';
 import path from 'path';
-import { MealPass, Order, Student, Meal, PassVerificationResult, DashboardStats } from './types';
+import {
+  MealPass,
+  Order,
+  Student,
+  Meal,
+  PassVerificationResult,
+  DashboardStats,
+  SpecialMealDate,
+  HostellerMealResponse,
+  MealType,
+  HostellerResponseState,
+  HostellerMealSummary,
+  StudentMealDetail,
+} from './types';
 
 const DATA_DIR = path.join(process.cwd(), '.data');
 const DB_FILE = path.join(DATA_DIR, 'canteen_db.json');
@@ -14,6 +27,8 @@ export interface DatabaseState {
   meals: Meal[];
   orders: Order[];
   passes: MealPass[];
+  specialMealDates: SpecialMealDate[];
+  hostellerMealResponses: HostellerMealResponse[];
   meta: {
     lastUpdated: string;
   };
@@ -30,6 +45,8 @@ const initialSeed: DatabaseState = {
       semester: 'Semester 3',
       studentIdCode: 'RVCAS/2024/BCA/042',
       profilePhoto: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+      studentType: 'hosteller',
+      hostelRoom: 'Room 204',
     },
     {
       id: 'student_albin',
@@ -39,6 +56,7 @@ const initialSeed: DatabaseState = {
       course: 'B.Com',
       semester: 'Semester 5',
       studentIdCode: 'RVCAS/2023/BCM/012',
+      studentType: 'day_scholar',
     },
     {
       id: 'student_nandana',
@@ -48,6 +66,8 @@ const initialSeed: DatabaseState = {
       course: 'BBA',
       semester: 'Semester 3',
       studentIdCode: 'RVCAS/2024/BBA/019',
+      studentType: 'hosteller',
+      hostelRoom: 'Room 112',
     },
     {
       id: 'student_jithin',
@@ -57,6 +77,7 @@ const initialSeed: DatabaseState = {
       course: 'BCA',
       semester: 'Semester 3',
       studentIdCode: 'RVCAS/2024/BCA/033',
+      studentType: 'day_scholar',
     },
     {
       id: 'student_fathima',
@@ -66,6 +87,8 @@ const initialSeed: DatabaseState = {
       course: 'B.Sc CS',
       semester: 'Semester 1',
       studentIdCode: 'RVCAS/2025/BCS/008',
+      studentType: 'hosteller',
+      hostelRoom: 'Room 105',
     },
   ],
   meals: [
@@ -163,6 +186,124 @@ const initialSeed: DatabaseState = {
       createdAt: '2026-08-27T12:05:00Z',
     },
   ],
+  specialMealDates: [
+    {
+      id: 'smd_20260926',
+      date: '2026-09-26',
+      name: 'Saturday',
+      type: 'WEEKEND',
+      breakfastEnabled: true,
+      lunchEnabled: true,
+      eveningSnackEnabled: true,
+      dinnerEnabled: true,
+      deadline: '2026-09-25T20:00:00.000Z',
+      status: 'OPEN',
+      createdAt: '2026-09-20T08:00:00.000Z',
+    },
+    {
+      id: 'smd_20260927',
+      date: '2026-09-27',
+      name: 'Sunday',
+      type: 'WEEKEND',
+      breakfastEnabled: true,
+      lunchEnabled: true,
+      eveningSnackEnabled: true,
+      dinnerEnabled: true,
+      deadline: '2026-09-26T20:00:00.000Z',
+      status: 'OPEN',
+      createdAt: '2026-09-20T08:00:00.000Z',
+    },
+    {
+      id: 'smd_20260928',
+      date: '2026-09-28',
+      name: 'Monday (College Holiday)',
+      type: 'HOLIDAY',
+      breakfastEnabled: true,
+      lunchEnabled: true,
+      eveningSnackEnabled: true,
+      dinnerEnabled: true,
+      deadline: '2026-09-27T20:00:00.000Z',
+      status: 'OPEN',
+      createdAt: '2026-09-20T08:00:00.000Z',
+    },
+  ],
+  hostellerMealResponses: [
+    // Student A (Shabeeb) responses for Saturday 26 Sep (Acceptance Test Scenario)
+    {
+      id: 'hmr_shabeeb_20260926_bf',
+      userId: 'student_shabeeb',
+      date: '2026-09-26',
+      mealType: 'BREAKFAST',
+      response: 'NEED_MEAL',
+      submittedAt: '2026-09-24T10:00:00.000Z',
+      updatedAt: '2026-09-24T10:00:00.000Z',
+    },
+    {
+      id: 'hmr_shabeeb_20260926_lunch',
+      userId: 'student_shabeeb',
+      date: '2026-09-26',
+      mealType: 'LUNCH',
+      response: 'NEED_MEAL',
+      submittedAt: '2026-09-24T10:00:00.000Z',
+      updatedAt: '2026-09-24T10:00:00.000Z',
+    },
+    {
+      id: 'hmr_shabeeb_20260926_snack',
+      userId: 'student_shabeeb',
+      date: '2026-09-26',
+      mealType: 'EVENING_SNACK',
+      response: 'DONT_NEED_MEAL',
+      submittedAt: '2026-09-24T10:00:00.000Z',
+      updatedAt: '2026-09-24T10:00:00.000Z',
+    },
+    {
+      id: 'hmr_shabeeb_20260926_dinner',
+      userId: 'student_shabeeb',
+      date: '2026-09-26',
+      mealType: 'DINNER',
+      response: 'NEED_MEAL',
+      submittedAt: '2026-09-24T10:00:00.000Z',
+      updatedAt: '2026-09-24T10:00:00.000Z',
+    },
+    // Student B (Nandana) responses for Saturday 26 Sep
+    {
+      id: 'hmr_nandana_20260926_bf',
+      userId: 'student_nandana',
+      date: '2026-09-26',
+      mealType: 'BREAKFAST',
+      response: 'NEED_MEAL',
+      submittedAt: '2026-09-24T11:00:00.000Z',
+      updatedAt: '2026-09-24T11:00:00.000Z',
+    },
+    {
+      id: 'hmr_nandana_20260926_lunch',
+      userId: 'student_nandana',
+      date: '2026-09-26',
+      mealType: 'LUNCH',
+      response: 'DONT_NEED_MEAL',
+      submittedAt: '2026-09-24T11:00:00.000Z',
+      updatedAt: '2026-09-24T11:00:00.000Z',
+    },
+    {
+      id: 'hmr_nandana_20260926_snack',
+      userId: 'student_nandana',
+      date: '2026-09-26',
+      mealType: 'EVENING_SNACK',
+      response: 'NEED_MEAL',
+      submittedAt: '2026-09-24T11:00:00.000Z',
+      updatedAt: '2026-09-24T11:00:00.000Z',
+    },
+    {
+      id: 'hmr_nandana_20260926_dinner',
+      userId: 'student_nandana',
+      date: '2026-09-26',
+      mealType: 'DINNER',
+      response: 'NEED_MEAL',
+      submittedAt: '2026-09-24T11:00:00.000Z',
+      updatedAt: '2026-09-24T11:00:00.000Z',
+    },
+    // Student C (Fathima): No response (NOT_RESPONDED)
+  ],
   meta: {
     lastUpdated: new Date().toISOString(),
   },
@@ -175,7 +316,35 @@ function readDb(): DatabaseState {
       return initialSeed;
     }
     const data = fs.readFileSync(DB_FILE, 'utf-8');
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+
+    // Backward compatibility for existing databases
+    let modified = false;
+    if (!parsed.specialMealDates) {
+      parsed.specialMealDates = initialSeed.specialMealDates;
+      modified = true;
+    }
+    if (!parsed.hostellerMealResponses) {
+      parsed.hostellerMealResponses = initialSeed.hostellerMealResponses;
+      modified = true;
+    }
+    // Ensure students have studentType
+    if (parsed.students && parsed.students.length > 0) {
+      parsed.students.forEach((s: Student) => {
+        if (!s.studentType) {
+          const seedStudent = initialSeed.students.find(is => is.id === s.id);
+          s.studentType = seedStudent?.studentType || 'day_scholar';
+          if (seedStudent?.hostelRoom) s.hostelRoom = seedStudent.hostelRoom;
+          modified = true;
+        }
+      });
+    }
+
+    if (modified) {
+      writeDb(parsed);
+    }
+
+    return parsed;
   } catch (e) {
     console.error('Error reading db file, using seed:', e);
     return initialSeed;
@@ -345,6 +514,304 @@ export const db = {
       mealsServed: totalServed,
       unusedPasses: unused,
       progressPercent,
+    };
+  },
+
+  // --- Hosteller System Helpers ---
+  getHostellers: (): Student[] => {
+    return readDb().students.filter(s => s.studentType === 'hosteller');
+  },
+
+  getSpecialMealDates: (): SpecialMealDate[] => {
+    const dates = readDb().specialMealDates || [];
+    return [...dates].sort((a, b) => a.date.localeCompare(b.date));
+  },
+
+  getSpecialMealDateByDate: (date: string): SpecialMealDate | undefined => {
+    return (readDb().specialMealDates || []).find(d => d.date === date);
+  },
+
+  getSpecialMealDateById: (id: string): SpecialMealDate | undefined => {
+    return (readDb().specialMealDates || []).find(d => d.id === id);
+  },
+
+  createOrUpdateSpecialMealDate: (data: Partial<SpecialMealDate> & { date: string }): SpecialMealDate => {
+    const state = readDb();
+    if (!state.specialMealDates) state.specialMealDates = [];
+    const index = state.specialMealDates.findIndex(d => d.date === data.date || (data.id && d.id === data.id));
+    const now = new Date().toISOString();
+
+    if (index >= 0) {
+      const existing = state.specialMealDates[index];
+      const updated: SpecialMealDate = {
+        ...existing,
+        ...data,
+        updatedAt: now,
+      };
+      state.specialMealDates[index] = updated;
+      writeDb(state);
+      return updated;
+    } else {
+      const newDate: SpecialMealDate = {
+        id: data.id || `smd_${data.date.replace(/-/g, '')}`,
+        date: data.date,
+        title: data.title || 'Special Food Planning Day',
+        dateType: data.dateType || 'SPECIAL_DAY',
+        description: data.description,
+        responseDeadline: data.responseDeadline || `${data.date}T20:00:00.000Z`,
+        isActive: data.isActive !== undefined ? data.isActive : true,
+        isFinalized: false,
+        mealsIncluded: data.mealsIncluded || ['BREAKFAST', 'LUNCH', 'EVENING_SNACK', 'DINNER'],
+        createdAt: now,
+        updatedAt: now,
+      };
+      state.specialMealDates.push(newDate);
+      writeDb(state);
+      return newDate;
+    }
+  },
+
+  deleteSpecialMealDate: (idOrDate: string): boolean => {
+    const state = readDb();
+    if (!state.specialMealDates) return false;
+    const initialLen = state.specialMealDates.length;
+    state.specialMealDates = state.specialMealDates.filter(d => d.id !== idOrDate && d.date !== idOrDate);
+    if (state.specialMealDates.length !== initialLen) {
+      writeDb(state);
+      return true;
+    }
+    return false;
+  },
+
+  saveHostellerMealResponses: (
+    userId: string,
+    date: string,
+    responses: Array<{ mealType: MealType; response: HostellerResponseState }>
+  ): { success: boolean; message: string; responses?: HostellerMealResponse[] } => {
+    const state = readDb();
+    if (!state.hostellerMealResponses) state.hostellerMealResponses = [];
+
+    // Check if the date is finalized or past deadline
+    const specialDate = (state.specialMealDates || []).find(d => d.date === date);
+    if (specialDate) {
+      if (specialDate.isFinalized) {
+        return {
+          success: false,
+          message: 'Meal count for this date has been finalized by staff. Responses can no longer be updated.',
+        };
+      }
+      if (specialDate.responseDeadline && new Date() > new Date(specialDate.responseDeadline)) {
+        return {
+          success: false,
+          message: 'The deadline for declaring meal requirements for this date has passed.',
+        };
+      }
+    }
+
+    const now = new Date().toISOString();
+    const savedResponses: HostellerMealResponse[] = [];
+
+    for (const item of responses) {
+      const existingIndex = state.hostellerMealResponses.findIndex(
+        r => r.userId === userId && r.date === date && r.mealType === item.mealType
+      );
+
+      if (existingIndex >= 0) {
+        state.hostellerMealResponses[existingIndex].response = item.response;
+        state.hostellerMealResponses[existingIndex].updatedAt = now;
+        savedResponses.push(state.hostellerMealResponses[existingIndex]);
+      } else {
+        const newResponse: HostellerMealResponse = {
+          id: `hmr_${userId}_${date.replace(/-/g, '')}_${item.mealType.toLowerCase()}`,
+          userId,
+          date,
+          mealType: item.mealType,
+          response: item.response,
+          submittedAt: now,
+          updatedAt: now,
+        };
+        state.hostellerMealResponses.push(newResponse);
+        savedResponses.push(newResponse);
+      }
+    }
+
+    writeDb(state);
+    return {
+      success: true,
+      message: 'Meal requirements updated successfully.',
+      responses: savedResponses,
+    };
+  },
+
+  getHostellerResponses: (date?: string, userId?: string): HostellerMealResponse[] => {
+    let list = readDb().hostellerMealResponses || [];
+    if (date) {
+      list = list.filter(r => r.date === date);
+    }
+    if (userId) {
+      list = list.filter(r => r.userId === userId);
+    }
+    return list;
+  },
+
+  getHostellerMealSummary: (date: string): HostellerMealSummary => {
+    const state = readDb();
+    const specialDate = (state.specialMealDates || []).find(d => d.date === date) || {
+      id: `smd_${date.replace(/-/g, '')}`,
+      date,
+      title: 'Hosteller Meal Planning',
+      dateType: 'SPECIAL_DAY' as const,
+      responseDeadline: `${date}T20:00:00.000Z`,
+      isActive: true,
+      isFinalized: false,
+      mealsIncluded: ['BREAKFAST', 'LUNCH', 'EVENING_SNACK', 'DINNER'] as MealType[],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const hostellers = state.students.filter(s => s.studentType === 'hosteller');
+    const totalHostellers = hostellers.length;
+    const responses = (state.hostellerMealResponses || []).filter(r => r.date === date);
+
+    const mealTypes: MealType[] = ['BREAKFAST', 'LUNCH', 'EVENING_SNACK', 'DINNER'];
+    const mealsSummary: Record<MealType, { need: number; dontNeed: number; notResponded: number; prepare: number }> = {
+      BREAKFAST: { need: 0, dontNeed: 0, notResponded: 0, prepare: 0 },
+      LUNCH: { need: 0, dontNeed: 0, notResponded: 0, prepare: 0 },
+      EVENING_SNACK: { need: 0, dontNeed: 0, notResponded: 0, prepare: 0 },
+      DINNER: { need: 0, dontNeed: 0, notResponded: 0, prepare: 0 },
+    };
+
+    for (const m of mealTypes) {
+      const need = responses.filter(r => r.mealType === m && r.response === 'NEED_MEAL').length;
+      const dontNeed = responses.filter(r => r.mealType === m && r.response === 'DONT_NEED_MEAL').length;
+      const notResponded = Math.max(0, totalHostellers - need - dontNeed);
+      mealsSummary[m] = {
+        need,
+        dontNeed,
+        notResponded,
+        prepare: need, // Staff prepare count = strictly Need count
+      };
+    }
+
+    // Count distinct students who responded to at least one meal for this date
+    const respondedUserIds = new Set(responses.map(r => r.userId));
+    const respondedHostellers = respondedUserIds.size;
+    const notRespondedHostellers = Math.max(0, totalHostellers - respondedHostellers);
+
+    return {
+      date,
+      specialDate,
+      totalHostellers,
+      respondedHostellers,
+      notRespondedHostellers,
+      meals: mealsSummary,
+      isFinalized: specialDate.isFinalized,
+      finalizedAt: specialDate.finalizedAt,
+      finalizedBy: specialDate.finalizedBy,
+    };
+  },
+
+  getHostellerMealDetails: (date: string, mealType?: MealType): StudentMealDetail[] => {
+    const state = readDb();
+    const hostellers = state.students.filter(s => s.studentType === 'hosteller');
+    const responses = (state.hostellerMealResponses || []).filter(r => r.date === date);
+
+    const details: StudentMealDetail[] = hostellers.map(student => {
+      const studentResponses = responses.filter(r => r.userId === student.id);
+      let responseState: HostellerResponseState = 'NOT_RESPONDED';
+      let submittedAt: string | undefined = undefined;
+
+      if (mealType) {
+        const mealResp = studentResponses.find(r => r.mealType === mealType);
+        if (mealResp) {
+          responseState = mealResp.response;
+          submittedAt = mealResp.submittedAt;
+        }
+      }
+
+      const mealResponsesMap: Record<MealType, HostellerResponseState> = {
+        BREAKFAST: 'NOT_RESPONDED',
+        LUNCH: 'NOT_RESPONDED',
+        EVENING_SNACK: 'NOT_RESPONDED',
+        DINNER: 'NOT_RESPONDED',
+      };
+
+      studentResponses.forEach(r => {
+        mealResponsesMap[r.mealType] = r.response;
+      });
+
+      return {
+        studentId: student.id,
+        name: student.name,
+        studentIdCode: student.studentIdCode,
+        department: student.department || student.course || 'BCA',
+        hostelRoom: student.hostelRoom,
+        mealType: mealType || 'LUNCH',
+        response: responseState,
+        mealResponses: mealResponsesMap,
+        submittedAt,
+      };
+    });
+
+    return details;
+  },
+
+  finalizeMealCount: (date: string, finalizedBy: string): { success: boolean; message: string; specialDate?: SpecialMealDate } => {
+    const state = readDb();
+    if (!state.specialMealDates) state.specialMealDates = [];
+    let specialDate = state.specialMealDates.find(d => d.date === date);
+
+    const now = new Date().toISOString();
+    if (!specialDate) {
+      specialDate = {
+        id: `smd_${date.replace(/-/g, '')}`,
+        date,
+        title: 'Hosteller Meal Planning',
+        dateType: 'SPECIAL_DAY',
+        responseDeadline: `${date}T20:00:00.000Z`,
+        isActive: true,
+        isFinalized: true,
+        finalizedAt: now,
+        finalizedBy,
+        mealsIncluded: ['BREAKFAST', 'LUNCH', 'EVENING_SNACK', 'DINNER'],
+        createdAt: now,
+        updatedAt: now,
+      };
+      state.specialMealDates.push(specialDate);
+    } else {
+      specialDate.isFinalized = true;
+      specialDate.finalizedAt = now;
+      specialDate.finalizedBy = finalizedBy;
+      specialDate.updatedAt = now;
+    }
+
+    writeDb(state);
+    return {
+      success: true,
+      message: `Meal count for ${date} has been finalized.`,
+      specialDate,
+    };
+  },
+
+  reopenMealCount: (date: string): { success: boolean; message: string; specialDate?: SpecialMealDate } => {
+    const state = readDb();
+    if (!state.specialMealDates) state.specialMealDates = [];
+    const specialDate = state.specialMealDates.find(d => d.date === date);
+
+    if (!specialDate) {
+      return { success: false, message: `No meal plan found for ${date}` };
+    }
+
+    specialDate.isFinalized = false;
+    specialDate.finalizedAt = undefined;
+    specialDate.finalizedBy = undefined;
+    specialDate.updatedAt = new Date().toISOString();
+
+    writeDb(state);
+    return {
+      success: true,
+      message: `Meal count for ${date} has been reopened.`,
+      specialDate,
     };
   },
 };

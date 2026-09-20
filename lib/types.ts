@@ -9,6 +9,9 @@ export interface Student {
   semester: string;
   studentIdCode: string;
   profilePhoto?: string;
+  studentType?: 'day_scholar' | 'hosteller';
+  hostelRoom?: string;
+  department?: string;
 }
 
 export interface Meal {
@@ -72,3 +75,90 @@ export interface DashboardStats {
   unusedPasses: number;
   progressPercent: number;
 }
+
+// ==========================================
+// HOSTELLER MEAL REQUIREMENT & PLANNING TYPES
+// ==========================================
+
+export type MealType = 'BREAKFAST' | 'LUNCH' | 'EVENING_SNACK' | 'DINNER';
+
+export type HostellerResponseState = 'NEED_MEAL' | 'DONT_NEED_MEAL' | 'NOT_RESPONDED';
+
+export type SpecialDateType = 'WEEKEND' | 'HOLIDAY' | 'VACATION' | 'SPECIAL_DAY' | 'OTHER';
+
+export interface SpecialMealDate {
+  id: string;
+  date: string; // YYYY-MM-DD
+  name?: string;
+  title?: string;
+  type?: SpecialDateType;
+  dateType?: SpecialDateType;
+  description?: string;
+  breakfastEnabled?: boolean;
+  lunchEnabled?: boolean;
+  eveningSnackEnabled?: boolean;
+  dinnerEnabled?: boolean;
+  mealsIncluded?: MealType[];
+  deadline?: string; // ISO date-time string
+  responseDeadline?: string; // ISO date-time string
+  status?: 'OPEN' | 'CLOSED' | 'FINALIZED';
+  isActive?: boolean;
+  isFinalized?: boolean;
+  finalizedAt?: string;
+  finalizedBy?: string;
+  finalizedCounts?: {
+    BREAKFAST?: number;
+    LUNCH?: number;
+    EVENING_SNACK?: number;
+    DINNER?: number;
+  };
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface HostellerMealResponse {
+  id: string;
+  userId: string;
+  date: string; // YYYY-MM-DD
+  mealType: MealType;
+  response: HostellerResponseState;
+  submittedAt: string;
+  updatedAt: string;
+}
+
+export interface MealCountSummary {
+  need: number;
+  dontNeed: number;
+  notResponded: number;
+  prepare: number;
+  mealType?: MealType;
+}
+
+export interface HostellerMealSummary {
+  date: string;
+  specialDate?: SpecialMealDate;
+  totalHostellers: number;
+  respondedHostellers?: number;
+  notRespondedHostellers?: number;
+  meals: Record<MealType, MealCountSummary>;
+  status?: 'OPEN' | 'CLOSED' | 'FINALIZED';
+  isFinalized?: boolean;
+  finalizedAt?: string;
+  finalizedBy?: string;
+  deadlinePassed?: boolean;
+}
+
+export interface StudentMealDetail {
+  student?: Student;
+  studentId?: string;
+  name: string;
+  studentIdCode: string;
+  department: string;
+  hostelRoom?: string;
+  mealType?: MealType;
+  response: HostellerResponseState | 'NOT_RESPONDED';
+  mealResponses?: Record<MealType, HostellerResponseState>;
+  submittedAt?: string;
+  updatedAt?: string;
+}
+

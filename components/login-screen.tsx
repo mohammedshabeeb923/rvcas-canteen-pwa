@@ -181,6 +181,41 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
+
+                  {/* Quick Demo Accounts */}
+                  <div className="pt-1.5 flex flex-wrap items-center gap-1.5">
+                    <span className="text-[10px] font-bold text-stone-400">Quick Test:</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPhone('9847123456');
+                        setPassword('123456');
+                      }}
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[#6B1D2F]/10 text-[#6B1D2F] hover:bg-[#6B1D2F]/20 transition"
+                    >
+                      ⚡ Shabeeb (Hosteller)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPhone('9847111222');
+                        setPassword('123456');
+                      }}
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-stone-200 text-stone-700 hover:bg-stone-300 transition"
+                    >
+                      ⚡ Albin (Day Scholar)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPhone('9847234567');
+                        setPassword('123456');
+                      }}
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-purple-100 text-purple-800 hover:bg-purple-200 transition"
+                    >
+                      ⚡ Nandana (Hosteller)
+                    </button>
+                  </div>
                 </div>
               </>
             ) : (

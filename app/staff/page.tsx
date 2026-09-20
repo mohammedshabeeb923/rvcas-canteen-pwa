@@ -16,9 +16,11 @@ import {
 } from 'lucide-react';
 import { Navbar } from '@/components/navbar';
 import { AuthGate } from '@/components/auth-gate';
+import { StaffHostellerSection } from '@/components/hosteller/staff-hosteller-section';
 
 function StaffDashboardContent() {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<'day_scholar' | 'hosteller'>('day_scholar');
   const [stats, setStats] = useState<any>({
     todayRevenue: 19440,
     mealsPurchased: 486,
@@ -119,19 +121,52 @@ function StaffDashboardContent() {
           </div>
         </div>
 
-        {/* Action feedback message */}
-        {actionMessage && (
-          <div className="p-3 bg-emerald-600 text-white rounded-2xl text-xs font-bold text-center animate-in fade-in shadow-md">
-            {actionMessage}
-          </div>
-        )}
+        {/* Module Switcher Tabs: Day Scholar Canteen vs Hosteller Meal Planning */}
+        <div className="flex items-center gap-2 p-1 bg-stone-200/70 rounded-2xl">
+          <button
+            type="button"
+            onClick={() => setActiveTab('day_scholar')}
+            className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 cursor-pointer ${
+              activeTab === 'day_scholar'
+                ? 'bg-white text-[#6B1D2F] shadow-sm'
+                : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            <Utensils className="w-4 h-4" />
+            <span>Day Scholar Canteen</span>
+          </button>
 
-        {/* 4 Stats Grid (486, 421, 65, ₹19,440) */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="bg-white rounded-3xl p-4 shadow-card border border-stone-200/70 text-center">
-            <p className="text-2xl md:text-3xl font-black text-rose-600 tracking-tight">
-              {stats.mealsPurchased}
-            </p>
+          <button
+            type="button"
+            onClick={() => setActiveTab('hosteller')}
+            className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 cursor-pointer ${
+              activeTab === 'hosteller'
+                ? 'bg-[#6B1D2F] text-white shadow-sm'
+                : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            <ListOrdered className="w-4 h-4" />
+            <span>Hosteller Meal Planning</span>
+          </button>
+        </div>
+
+        {activeTab === 'hosteller' ? (
+          <StaffHostellerSection isAdmin={false} />
+        ) : (
+          <>
+            {/* Action feedback message */}
+            {actionMessage && (
+              <div className="p-3 bg-emerald-600 text-white rounded-2xl text-xs font-bold text-center animate-in fade-in shadow-md">
+                {actionMessage}
+              </div>
+            )}
+
+            {/* 4 Stats Grid (486, 421, 65, ₹19,440) */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="bg-white rounded-3xl p-4 shadow-card border border-stone-200/70 text-center">
+                <p className="text-2xl md:text-3xl font-black text-rose-600 tracking-tight">
+                  {stats.mealsPurchased}
+                </p>
             <p className="text-[11px] font-bold text-stone-500 uppercase tracking-tight mt-1">
               Meals Purchased
             </p>
@@ -292,6 +327,8 @@ function StaffDashboardContent() {
             })}
           </div>
         </div>
+        </>
+      )}
       </main>
     </div>
   );

@@ -17,9 +17,11 @@ import {
 } from 'lucide-react';
 import { Navbar } from '@/components/navbar';
 import { AuthGate } from '@/components/auth-gate';
+import { StaffHostellerSection } from '@/components/hosteller/staff-hosteller-section';
 
 function AdminDashboardContent() {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<'canteen' | 'hosteller'>('canteen');
   const [stats, setStats] = useState<any>({
     todayRevenue: 19440,
     mealsPurchased: 486,
@@ -81,8 +83,41 @@ function AdminDashboardContent() {
           </div>
         </div>
 
-        {/* 4 Stat Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {/* Module Switcher Tabs */}
+        <div className="flex items-center gap-2 p-1 bg-stone-200/70 rounded-2xl">
+          <button
+            type="button"
+            onClick={() => setActiveTab('canteen')}
+            className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 cursor-pointer ${
+              activeTab === 'canteen'
+                ? 'bg-white text-[#6B1D2F] shadow-sm'
+                : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            <Utensils className="w-4 h-4" />
+            <span>Day Scholar Canteen &amp; Revenue</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('hosteller')}
+            className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 cursor-pointer ${
+              activeTab === 'hosteller'
+                ? 'bg-[#6B1D2F] text-white shadow-sm'
+                : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Hosteller Meal Planning</span>
+          </button>
+        </div>
+
+        {activeTab === 'hosteller' ? (
+          <StaffHostellerSection isAdmin={true} />
+        ) : (
+          <>
+            {/* 4 Stat Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="bg-white rounded-3xl p-5 shadow-card border border-stone-200/70">
             <span className="text-xs font-bold text-stone-400 block mb-1">Today&apos;s Revenue</span>
             <p className="text-2xl md:text-3xl font-black text-stone-900 tracking-tight">
@@ -328,7 +363,9 @@ function AdminDashboardContent() {
             </table>
           </div>
         </div>
-      </main>
+        </>
+      )}
+    </main>
     </div>
   );
 }
