@@ -18,17 +18,34 @@ export async function POST(req: Request) {
       const studentSearch = (phone || identifier || '').trim();
       let student = studentSearch ? (db.getStudentByPhone(studentSearch) || db.getStudentByIdentifier(studentSearch)) : undefined;
 
-      // If student not found, fallback to demo student if matching default
+      // If student not found, check if valid 10-digit number and auto-enroll or return clear error
       if (!student) {
-        if (!studentSearch || studentSearch.includes('9847123456') || studentSearch.toLowerCase().includes('shabeeb')) {
-          student = db.getStudentById('student_shabeeb');
+        const cleanDigits = studentSearch.replace(/[^0-9]/g, '').slice(-10);
+        if (cleanDigits.length === 10) {
+          student = db.createOrUpdateStudent({
+            id: `student_${cleanDigits}`,
+            name: 'Student',
+            phone: cleanDigits,
+            course: 'BCA',
+            semester: 'Semester 3',
+            studentIdCode: `RVCAS/2024/STU/${cleanDigits.slice(-3)}`,
+            studentType: 'day_scholar',
+          });
+        } else if (!studentSearch) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Please enter your registered 10-digit mobile number.',
+            },
+            { status: 400 }
+          );
         } else {
           return NextResponse.json(
             {
               success: false,
-              error: `No student registered with Phone Number "${studentSearch}". Please enter your registered 10-digit mobile number.`,
+              error: `Please enter a valid 10-digit mobile number to sign in.`,
             },
-            { status: 404 }
+            { status: 400 }
           );
         }
       }

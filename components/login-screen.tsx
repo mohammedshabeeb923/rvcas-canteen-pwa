@@ -10,10 +10,10 @@ interface LoginScreenProps {
 
 export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenProps) {
   const [isStaffMode, setIsStaffMode] = useState(defaultRole !== 'student');
-  const [phone, setPhone] = useState('9847123456');
-  const [password, setPassword] = useState('123456');
-  const [email, setEmail] = useState('shibinsha@gmail.com');
-  const [pin, setPin] = useState('842601');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [pin, setPin] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -179,41 +179,6 @@ export function LoginScreen({ onSuccess, defaultRole = 'student' }: LoginScreenP
                       className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 cursor-pointer"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-
-                  {/* Quick Demo Accounts */}
-                  <div className="pt-1.5 flex flex-wrap items-center gap-1.5">
-                    <span className="text-[10px] font-bold text-stone-400">Quick Test:</span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setPhone('9847123456');
-                        setPassword('123456');
-                      }}
-                      className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[#6B1D2F]/10 text-[#6B1D2F] hover:bg-[#6B1D2F]/20 transition"
-                    >
-                      ⚡ Shabeeb (Hosteller)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setPhone('9847111222');
-                        setPassword('123456');
-                      }}
-                      className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-stone-200 text-stone-700 hover:bg-stone-300 transition"
-                    >
-                      ⚡ Albin (Day Scholar)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setPhone('9847234567');
-                        setPassword('123456');
-                      }}
-                      className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-purple-100 text-purple-800 hover:bg-purple-200 transition"
-                    >
-                      ⚡ Nandana (Hosteller)
                     </button>
                   </div>
                 </div>

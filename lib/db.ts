@@ -387,6 +387,23 @@ export const db = {
       s.phone && s.phone.replace(/[^0-9]/g, '').slice(-10) === digits
     );
   },
+  createOrUpdateStudent: (student: Student): Student => {
+    const state = readDb();
+    const digits = student.phone ? student.phone.replace(/[^0-9]/g, '').slice(-10) : '';
+    const index = state.students.findIndex(s => 
+      s.id === student.id || 
+      (digits && s.phone && s.phone.replace(/[^0-9]/g, '').slice(-10) === digits)
+    );
+    if (index >= 0) {
+      state.students[index] = { ...state.students[index], ...student };
+      writeDb(state);
+      return state.students[index];
+    } else {
+      state.students.push(student);
+      writeDb(state);
+      return student;
+    }
+  },
   createOrder: (order: Order): Order => {
     const state = readDb();
     state.orders.unshift(order);
