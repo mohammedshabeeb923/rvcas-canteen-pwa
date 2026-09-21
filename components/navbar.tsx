@@ -49,11 +49,11 @@ export function Navbar({
     if (typeof window !== 'undefined') {
       localStorage.removeItem('rvcas_user');
       localStorage.removeItem('rvcas_token');
-      // Hard redirect to root to reset session and show login screen
-      window.location.href = '/';
     }
     if (onLogout) {
       onLogout();
+    } else {
+      window.location.href = '/?view=role_select';
     }
   };
 

@@ -23,7 +23,13 @@ export function WelcomeScreen({ onEnter }: WelcomeScreenProps) {
   }, [onEnter, router]);
 
   return (
-    <div className="h-[100dvh] w-full bg-[#FAF7F2] sm:bg-[#F4EFE6] flex justify-center items-center overflow-hidden sm:p-4">
+    <div
+      onClick={() => {
+        if (onEnter) onEnter();
+        else router.push('/');
+      }}
+      className="h-[100dvh] w-full bg-[#FAF7F2] sm:bg-[#F4EFE6] flex justify-center items-center overflow-hidden sm:p-4 cursor-pointer select-none"
+    >
       {/* Mobile Screen Container */}
       <div className="w-full max-w-sm h-full sm:h-[844px] sm:max-h-[92vh] sm:rounded-[2.5rem] sm:border sm:border-stone-300/80 sm:shadow-2xl overflow-hidden relative flex flex-col justify-between bg-gradient-to-b from-[#FDFBF8] via-[#FAF7F2] to-[#141E28]">
         

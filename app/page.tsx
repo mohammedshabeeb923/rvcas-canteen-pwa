@@ -12,14 +12,22 @@ import { Utensils, CheckCircle2, ArrowRight, Sparkles, Building2, ExternalLink }
 
 export default function FirstPage() {
   const router = useRouter();
-  // Starts on 'role_select' ("Who are you?"), transitions to 'login', then 'home'
-  const [currentView, setCurrentView] = useState<'role_select' | 'login' | 'home'>('role_select');
+  // Starts on 'welcome', transitions to 'role_select' ("Who are you?"), then 'login', then 'home'
+  const [currentView, setCurrentView] = useState<'welcome' | 'role_select' | 'login' | 'home'>('welcome');
   const [selectedRole, setSelectedRole] = useState<'day_scholar' | 'hosteller' | 'faculty' | 'staff' | 'admin'>('day_scholar');
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [mealStatus, setMealStatus] = useState<'NOT_PURCHASED' | 'VALID' | 'SERVED'>('NOT_PURCHASED');
   const [activePass, setActivePass] = useState<any>(null);
 
   useEffect(() => {
+    // If URL specifically requests role_select (e.g. from logout), skip welcome directly to role selection
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('view') === 'role_select') {
+        setCurrentView('role_select');
+      }
+    }
+
     // 1. Check persistent authentication session
     fetch('/api/auth/session')
       .then((res) => {
@@ -29,26 +37,12 @@ export default function FirstPage() {
       .then((data) => {
         if (data.authenticated && data.user) {
           setCurrentUser(data.user);
-          if (data.user.role === 'staff') {
-            router.push('/staff');
-          } else if (data.user.role === 'admin') {
-            router.push('/admin');
-          } else {
-            setCurrentView('home');
-          }
         } else if (typeof window !== 'undefined') {
           const cached = localStorage.getItem('rvcas_user');
           if (cached) {
             try {
               const u = JSON.parse(cached);
               setCurrentUser(u);
-              if (u.role === 'staff') {
-                router.push('/staff');
-              } else if (u.role === 'admin') {
-                router.push('/admin');
-              } else {
-                setCurrentView('home');
-              }
             } catch (e) {}
           }
         }
@@ -86,6 +80,22 @@ export default function FirstPage() {
     year: 'numeric',
   });
 
+  const handleWelcomeComplete = () => {
+    // Check if user is already authenticated
+    const cached = currentUser || (typeof window !== 'undefined' && localStorage.getItem('rvcas_user') ? JSON.parse(localStorage.getItem('rvcas_user')!) : null);
+    if (cached) {
+      if (cached.role === 'staff') {
+        router.push('/staff');
+      } else if (cached.role === 'admin') {
+        router.push('/admin');
+      } else {
+        setCurrentView('home');
+      }
+    } else {
+      setCurrentView('role_select');
+    }
+  };
+
   const handleLogout = () => {
     setCurrentUser(null);
     if (typeof window !== 'undefined') {
@@ -95,7 +105,12 @@ export default function FirstPage() {
     setCurrentView('role_select');
   };
 
-  // SCREEN 1: "WHO ARE YOU?" ROLE SELECTION SCREEN
+  // SCREEN 1: WELCOME SCREEN (First page users see when opening the website)
+  if (currentView === 'welcome') {
+    return <WelcomeScreen onEnter={handleWelcomeComplete} />;
+  }
+
+  // SCREEN 2: "WHO ARE YOU?" ROLE SELECTION SCREEN
   if (currentView === 'role_select') {
     return (
       <RoleSelectionScreen

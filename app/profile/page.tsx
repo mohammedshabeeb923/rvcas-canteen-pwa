@@ -68,7 +68,7 @@ export default function ProfilePage() {
                 localStorage.removeItem('rvcas_user');
                 localStorage.removeItem('rvcas_token');
               }
-              window.location.href = '/';
+              window.location.href = '/?view=role_select';
             }}
             className="w-full flex items-center justify-between p-3.5 rounded-2xl hover:bg-red-50 text-red-600 transition text-left"
           >
