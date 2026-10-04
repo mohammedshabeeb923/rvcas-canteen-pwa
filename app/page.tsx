@@ -110,7 +110,16 @@ export default function FirstPage() {
       <RoleSelectionScreen
         onSelectRole={(role) => {
           setSelectedRole(role);
-          setCurrentView('login');
+          if (
+            currentUser &&
+            ((role === 'day_scholar' && (currentUser.studentType === 'day_scholar' || currentUser.role === 'student')) ||
+             (role === 'hosteller' && (currentUser.studentType === 'hosteller' || currentUser.role === 'hosteller')) ||
+             (role === 'faculty' && (currentUser.studentType === 'faculty' || currentUser.role === 'faculty')))
+          ) {
+            setCurrentView('home');
+          } else {
+            setCurrentView('login');
+          }
         }}
         onStaffLogin={() => {
           setSelectedRole('staff');

@@ -406,6 +406,34 @@ export const db = {
       s.phone && s.phone.replace(/[^0-9]/g, '').slice(-10) === digits
     );
   },
+  getStudentByEmail: (email: string): Student | undefined => {
+    if (!email) return undefined;
+    const cleanEmail = email.trim().toLowerCase();
+    return readDb().students.find(s => s.email && s.email.trim().toLowerCase() === cleanEmail);
+  },
+  updateStudentPhone: (studentId: string, phone: string): Student | undefined => {
+    const state = readDb();
+    const student = state.students.find(s => s.id === studentId);
+    if (student) {
+      student.phone = phone.replace(/[^0-9]/g, '').slice(-10);
+      writeDb(state);
+      return student;
+    }
+    return undefined;
+  },
+  upsertStudent: (student: Student): Student => {
+    const state = readDb();
+    const index = state.students.findIndex(s => s.id === student.id || (student.email && s.email?.toLowerCase() === student.email.toLowerCase()));
+    if (index >= 0) {
+      state.students[index] = { ...state.students[index], ...student };
+      writeDb(state);
+      return state.students[index];
+    } else {
+      state.students.push(student);
+      writeDb(state);
+      return student;
+    }
+  },
   createOrder: (order: Order): Order => {
     const state = readDb();
     state.orders.unshift(order);

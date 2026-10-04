@@ -29,6 +29,8 @@ export function isAuthorizedAdminEmail(email: string): boolean {
 export interface AuthSession {
   userId: string;
   email?: string;
+  phone?: string;
+  avatar?: string;
   name: string;
   role: 'student' | 'hosteller' | 'faculty' | 'staff' | 'admin';
   studentType?: 'day_scholar' | 'hosteller' | 'faculty';

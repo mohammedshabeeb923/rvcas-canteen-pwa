@@ -34,9 +34,13 @@ export async function GET(req: Request) {
         id: session.userId,
         name: session.name,
         email: session.email,
+        phone: session.phone,
+        avatar: session.avatar,
         role: session.role,
+        studentType: session.studentType,
         studentIdCode: session.studentIdCode,
         courseSem: session.courseSem,
+        hostelRoom: session.hostelRoom,
       },
     });
   } catch (error: any) {

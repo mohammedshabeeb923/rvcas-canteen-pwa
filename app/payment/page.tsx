@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Utensils, ShieldCheck, ChevronRight, Check, Plus, Trash2, Users } from 'lucide-react';
+import { ArrowLeft, Utensils, ShieldCheck, ChevronRight, Check, Plus, Trash2, Users, Phone } from 'lucide-react';
 import Script from 'next/script';
 
 interface PeerStudent {
@@ -32,6 +32,8 @@ const SEMESTERS = [
 
 export default function PaymentPage() {
   const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [contactPhone, setContactPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,8 +48,45 @@ export default function PaymentPage() {
   const [newSemester, setNewSemester] = useState('Semester 3');
   const [searchFilter, setSearchFilter] = useState('');
 
-  // Load memorized classmates from localStorage
+  // Load active session user and memorized classmates
   React.useEffect(() => {
+    // 1. Fetch active session
+    fetch('/api/auth/session')
+      .then((res) => {
+        if (res.ok) return res.json();
+        return { authenticated: false };
+      })
+      .then((data) => {
+        if (data.authenticated && data.user) {
+          setCurrentUser(data.user);
+          if (data.user.phone) {
+            setContactPhone(data.user.phone);
+          }
+        } else if (typeof window !== 'undefined') {
+          const cached = localStorage.getItem('rvcas_user');
+          if (cached) {
+            try {
+              const u = JSON.parse(cached);
+              setCurrentUser(u);
+              if (u.phone) setContactPhone(u.phone);
+            } catch (e) {}
+          }
+        }
+      })
+      .catch(() => {
+        if (typeof window !== 'undefined') {
+          const cached = localStorage.getItem('rvcas_user');
+          if (cached) {
+            try {
+              const u = JSON.parse(cached);
+              setCurrentUser(u);
+              if (u.phone) setContactPhone(u.phone);
+            } catch (e) {}
+          }
+        }
+      });
+
+    // 2. Load memorized classmates
     if (typeof window !== 'undefined') {
       try {
         const saved = localStorage.getItem('rvcas_memorized_classmates');
@@ -112,12 +151,33 @@ export default function PaymentPage() {
     setError(null);
 
     try {
+      const cleanPhone = (contactPhone || '').replace(/[^0-9]/g, '').slice(-10);
+      if (cleanPhone.length !== 10) {
+        throw new Error('Please enter a valid 10-digit mobile number for meal pass delivery & Cashfree checkout.');
+      }
+
+      // Persist phone to localStorage
+      if (typeof window !== 'undefined') {
+        const cached = localStorage.getItem('rvcas_user');
+        if (cached) {
+          try {
+            const u = JSON.parse(cached);
+            u.phone = cleanPhone;
+            localStorage.setItem('rvcas_user', JSON.stringify(u));
+          } catch (e) {}
+        }
+      }
+
+      const activeUserId = currentUser?.id || 'student_shabeeb';
+      const activeUserName = currentUser?.name || 'Student';
+      const activeUserCourse = currentUser?.courseSem || 'BCA • Semester 3';
+
       // 1. Prepare recipients array
       const recipients = [
         {
-          studentId: 'student_shabeeb',
-          name: 'Shabeeb',
-          courseSem: 'BCA • Semester 3',
+          studentId: activeUserId,
+          name: activeUserName,
+          courseSem: activeUserCourse,
         },
         ...selectedPeers.map((p) => ({
           studentId: p.id,
@@ -126,12 +186,16 @@ export default function PaymentPage() {
         })),
       ];
 
-      // 2. Call server-side /api/orders/create
+      // 2. Call server-side /api/orders/create with verified phone
       const createRes = await fetch('/api/orders/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          studentId: 'student_shabeeb',
+          studentId: activeUserId,
+          customerName: activeUserName,
+          customerEmail: currentUser?.email,
+          customerPhone: cleanPhone,
+          phone: cleanPhone,
           mealId: 'meal_today',
           quantity: totalMeals,
         }),
@@ -254,8 +318,8 @@ export default function PaymentPage() {
                   1
                 </span>
                 <div>
-                  <p className="font-bold text-stone-900">Shabeeb (You)</p>
-                  <p className="text-[11px] text-stone-500">BCA • Semester 3</p>
+                  <p className="font-bold text-stone-900">{currentUser?.name ? `${currentUser.name} (You)` : 'You'}</p>
+                  <p className="text-[11px] text-stone-500">{currentUser?.courseSem || 'BCA • Semester 3'}</p>
                 </div>
               </div>
               <span className="font-bold text-[#6B1D2F]">₹40</span>
@@ -305,6 +369,40 @@ export default function PaymentPage() {
             <span>Total Amount</span>
             <span className="text-xl font-extrabold text-[#6B1D2F]">₹{totalAmount}</span>
           </div>
+        </div>
+
+        {/* Contact & Phone Number Collection Card */}
+        <div className="bg-white rounded-3xl p-4 shadow-card border border-stone-200/70 mb-5">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Phone className="w-4 h-4 text-[#6B1D2F]" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-600">
+                Contact &amp; Pass Delivery Phone
+              </h3>
+            </div>
+            <span className="text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+              Required for Payment
+            </span>
+          </div>
+
+          <div className="flex rounded-xl bg-stone-50 border border-stone-200 overflow-hidden focus-within:ring-2 focus-within:ring-[#6B1D2F]/20 focus-within:border-[#6B1D2F] transition">
+            <div className="inline-flex items-center gap-1 px-3 bg-stone-100 border-r border-stone-200 text-xs font-bold text-stone-700 select-none">
+              <span className="text-sm">🇮🇳</span>
+              <span>+91</span>
+            </div>
+            <input
+              type="tel"
+              required
+              maxLength={10}
+              value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value.replace(/[^0-9]/g, ''))}
+              placeholder="Enter 10-digit mobile number"
+              className="w-full px-3 py-2.5 text-stone-900 placeholder:text-stone-300 text-xs sm:text-sm font-bold tracking-wider bg-transparent focus:outline-none"
+            />
+          </div>
+          <p className="text-[10px] text-stone-400 mt-1.5 font-medium">
+            Your digital meal pass, QR token, and Cashfree UPI payment confirmation will be sent to this number.
+          </p>
         </div>
 
         {/* Payment Partner & Supported Methods Section */}
