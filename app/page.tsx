@@ -28,7 +28,7 @@ export default function FirstPage() {
       }
     }
 
-    // 1. Check persistent authentication session
+    // 1. Check persistent authentication session (student / hosteller / faculty)
     fetch('/api/auth/session')
       .then((res) => {
         if (res.ok) return res.json();
@@ -36,13 +36,17 @@ export default function FirstPage() {
       })
       .then((data) => {
         if (data.authenticated && data.user) {
-          setCurrentUser(data.user);
+          if (data.user.role === 'student' || data.user.role === 'hosteller' || data.user.role === 'faculty') {
+            setCurrentUser(data.user);
+          }
         } else if (typeof window !== 'undefined') {
           const cached = localStorage.getItem('rvcas_user');
           if (cached) {
             try {
               const u = JSON.parse(cached);
-              setCurrentUser(u);
+              if (u.role === 'student' || u.role === 'hosteller' || u.role === 'faculty') {
+                setCurrentUser(u);
+              }
             } catch (e) {}
           }
         }
@@ -81,19 +85,9 @@ export default function FirstPage() {
   });
 
   const handleWelcomeComplete = () => {
-    // Check if user is already authenticated
-    const cached = currentUser || (typeof window !== 'undefined' && localStorage.getItem('rvcas_user') ? JSON.parse(localStorage.getItem('rvcas_user')!) : null);
-    if (cached) {
-      if (cached.role === 'staff') {
-        router.push('/staff');
-      } else if (cached.role === 'admin') {
-        router.push('/admin');
-      } else {
-        setCurrentView('home');
-      }
-    } else {
-      setCurrentView('role_select');
-    }
+    // Flow: Welcome Page -> "Who are you?" Role Selection Screen
+    // Never auto-redirect to /admin or /staff when opening the website
+    setCurrentView('role_select');
   };
 
   const handleLogout = () => {

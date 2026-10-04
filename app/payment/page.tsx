@@ -32,7 +32,6 @@ const SEMESTERS = [
 
 export default function PaymentPage() {
   const router = useRouter();
-  const [selectedMethod, setSelectedMethod] = useState<'upi' | 'gpay' | 'phonepe' | 'paytm'>('upi');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -308,125 +307,46 @@ export default function PaymentPage() {
           </div>
         </div>
 
-        {/* Pay Securely Section */}
+        {/* Payment Partner & Supported Methods Section */}
         <div className="mb-5">
-          <div className="flex items-center gap-1.5 mb-3 text-xs font-bold uppercase tracking-wider text-stone-400">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>Pay securely using</span>
+          <div className="flex items-center justify-between mb-2 px-1">
+            <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-stone-400">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span>Payment Gateway</span>
+            </div>
+            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+              Cashfree Verified
+            </span>
           </div>
 
-          <div className="bg-white rounded-3xl p-2 shadow-card border border-stone-200/70 space-y-1">
-            {/* UPI Option */}
-            <button
-              type="button"
-              onClick={() => setSelectedMethod('upi')}
-              className={`w-full flex items-center justify-between p-3.5 rounded-2xl transition ${
-                selectedMethod === 'upi' ? 'bg-[#6B1D2F]/5 ring-1 ring-[#6B1D2F]/30' : 'hover:bg-stone-50'
-              }`}
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-white border border-stone-200/90 shadow-xs flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
-                  <img
-                    src="/images/logos/upi.svg"
-                    alt="UPI"
-                    className="w-full h-full object-contain"
-                  />
+          <div className="bg-white rounded-3xl p-4 shadow-card border border-stone-200/70 space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-sm font-black text-stone-900 leading-tight">Cashfree Payments</h4>
+                <p className="text-[11px] text-stone-500 font-medium mt-0.5">
+                  Direct UPI app intent, cards &amp; netbanking
+                </p>
+              </div>
+              <div className="flex items-center -space-x-1.5 shrink-0">
+                <div className="w-7 h-7 rounded-xl bg-white border border-stone-200 shadow-xs flex items-center justify-center p-1" title="UPI">
+                  <img src="/images/logos/upi.svg" alt="UPI" className="w-full h-full object-contain" />
                 </div>
-                <div className="text-left">
-                  <span className="text-sm font-bold text-stone-900 block leading-tight">UPI ID / QR</span>
-                  <span className="text-[11px] text-stone-500 font-medium">Instant zero-fee transfer</span>
+                <div className="w-7 h-7 rounded-xl bg-white border border-stone-200 shadow-xs flex items-center justify-center p-1" title="Google Pay">
+                  <img src="/images/logos/gpay.svg" alt="GPay" className="w-full h-full object-contain" />
+                </div>
+                <div className="w-7 h-7 rounded-xl bg-white border border-stone-200 shadow-xs flex items-center justify-center p-1" title="PhonePe">
+                  <img src="/images/logos/phonepe.svg" alt="PhonePe" className="w-full h-full object-contain" />
+                </div>
+                <div className="w-7 h-7 rounded-xl bg-white border border-stone-200 shadow-xs flex items-center justify-center p-1" title="Paytm">
+                  <img src="/images/logos/paytm.svg" alt="Paytm" className="w-full h-full object-contain" />
                 </div>
               </div>
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition ${
-                selectedMethod === 'upi' ? 'border-[#6B1D2F] bg-[#6B1D2F]' : 'border-stone-300'
-              }`}>
-                {selectedMethod === 'upi' && <div className="w-2 h-2 rounded-full bg-white" />}
-              </div>
-            </button>
+            </div>
 
-            {/* Google Pay */}
-            <button
-              type="button"
-              onClick={() => setSelectedMethod('gpay')}
-              className={`w-full flex items-center justify-between p-3.5 rounded-2xl transition ${
-                selectedMethod === 'gpay' ? 'bg-[#6B1D2F]/5 ring-1 ring-[#6B1D2F]/30' : 'hover:bg-stone-50'
-              }`}
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-white border border-stone-200/90 shadow-xs flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
-                  <img
-                    src="/images/logos/gpay.svg"
-                    alt="Google Pay"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="text-left">
-                  <span className="text-sm font-bold text-stone-900 block leading-tight">Google Pay</span>
-                  <span className="text-[11px] text-stone-500 font-medium">Pay via GPay UPI</span>
-                </div>
-              </div>
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition ${
-                selectedMethod === 'gpay' ? 'border-[#6B1D2F] bg-[#6B1D2F]' : 'border-stone-300'
-              }`}>
-                {selectedMethod === 'gpay' && <div className="w-2 h-2 rounded-full bg-white" />}
-              </div>
-            </button>
-
-            {/* PhonePe */}
-            <button
-              type="button"
-              onClick={() => setSelectedMethod('phonepe')}
-              className={`w-full flex items-center justify-between p-3.5 rounded-2xl transition ${
-                selectedMethod === 'phonepe' ? 'bg-[#6B1D2F]/5 ring-1 ring-[#6B1D2F]/30' : 'hover:bg-stone-50'
-              }`}
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-white border border-stone-200/90 shadow-xs flex items-center justify-center p-1 shrink-0 overflow-hidden">
-                  <img
-                    src="/images/logos/phonepe.svg"
-                    alt="PhonePe"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="text-left">
-                  <span className="text-sm font-bold text-stone-900 block leading-tight">PhonePe</span>
-                  <span className="text-[11px] text-stone-500 font-medium">Pay via PhonePe UPI</span>
-                </div>
-              </div>
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition ${
-                selectedMethod === 'phonepe' ? 'border-[#6B1D2F] bg-[#6B1D2F]' : 'border-stone-300'
-              }`}>
-                {selectedMethod === 'phonepe' && <div className="w-2 h-2 rounded-full bg-white" />}
-              </div>
-            </button>
-
-            {/* Paytm */}
-            <button
-              type="button"
-              onClick={() => setSelectedMethod('paytm')}
-              className={`w-full flex items-center justify-between p-3.5 rounded-2xl transition ${
-                selectedMethod === 'paytm' ? 'bg-[#6B1D2F]/5 ring-1 ring-[#6B1D2F]/30' : 'hover:bg-stone-50'
-              }`}
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-white border border-stone-200/90 shadow-xs flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
-                  <img
-                    src="/images/logos/paytm.svg"
-                    alt="Paytm"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="text-left">
-                  <span className="text-sm font-bold text-stone-900 block leading-tight">Paytm</span>
-                  <span className="text-[11px] text-stone-500 font-medium">Paytm Wallet &amp; UPI</span>
-                </div>
-              </div>
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition ${
-                selectedMethod === 'paytm' ? 'border-[#6B1D2F] bg-[#6B1D2F]' : 'border-stone-300'
-              }`}>
-                {selectedMethod === 'paytm' && <div className="w-2 h-2 rounded-full bg-white" />}
-              </div>
-            </button>
+            <div className="pt-2.5 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-500 font-medium">
+              <span>Accepted methods:</span>
+              <span className="text-stone-700 font-semibold">GPay • PhonePe • Paytm • Cards • NetBanking</span>
+            </div>
           </div>
         </div>
 
@@ -446,15 +366,15 @@ export default function PaymentPage() {
           {loading ? (
             <div className="flex items-center gap-2">
               <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
-              <span>Verifying & Issuing Pass...</span>
+              <span>Connecting to Cashfree...</span>
             </div>
           ) : (
-            <span>Pay ₹{totalAmount}</span>
+            <span>Proceed to Pay ₹{totalAmount}</span>
           )}
         </button>
 
         <p className="text-[11px] text-center text-stone-400 mt-3 font-medium">
-          🔒 Payments are securely processed with Cashfree Payments.
+          🔒 Secure 256-bit encrypted checkout via Cashfree Payments
         </p>
 
         {/* Cashfree Web SDK */}
